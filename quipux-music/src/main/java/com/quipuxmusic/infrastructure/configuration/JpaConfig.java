@@ -5,9 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import static com.quipuxmusic.utils.constant.QuipuxMusicCostant.ENTITY_PACKAGE;
+import static com.quipuxmusic.utils.constant.QuipuxMusicCostant.REPOSITORY_PACKAGE;
+
 @Configuration
 @EnableTransactionManagement
-@EntityScan(basePackages = "com.quipuxmusic.core.domain.entities")
-@EnableJpaRepositories(basePackages = "com.quipuxmusic.infrastructure.adapter.secondary.repository")
+@EntityScan(basePackages = ENTITY_PACKAGE )
+@EnableJpaRepositories(basePackages = REPOSITORY_PACKAGE)
 public class JpaConfig {
 }

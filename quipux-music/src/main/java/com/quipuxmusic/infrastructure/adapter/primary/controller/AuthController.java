@@ -3,10 +3,11 @@ package com.quipuxmusic.infrastructure.adapter.primary.controller;
 import com.quipuxmusic.core.application.dto.LoginRequestDTO;
 import com.quipuxmusic.core.application.dto.LoginResponseDTO;
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
-import com.quipuxmusic.core.application.dto.RegistroRequestDTO;
+import com.quipuxmusic.core.application.dto.RegisterRequestDTO;
 import com.quipuxmusic.core.application.facade.AuthFacadePort;
 import com.quipuxmusic.core.application.facade.AuthenticateUserFacade;
 import com.quipuxmusic.core.application.facade.CreateUserFacade;
+import com.quipuxmusic.core.application.facade.CreateUserFacadePort;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthFacadePort authenticateUserFacade;
-    private final CreateUserFacade createUserFacade;
+    private final CreateUserFacadePort createUserFacade;
 
     @Autowired
     public AuthController(AuthenticateUserFacade authenticateUserFacade,
@@ -39,9 +40,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegistroRequestDTO request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDTO request) {
         try {
-            MessageResponseDTO response = createUserFacade.createUser(request);
+            MessageResponseDTO response = createUserFacade.execute(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             MessageResponseDTO error = new MessageResponseDTO("Error de registro: " + e.getMessage(), "ERROR");
@@ -52,9 +53,9 @@ public class AuthController {
     @PostMapping("/create-test-users")
     public ResponseEntity<?> createTestUsers() {
         try {
-            createUserFacade.createUser(new RegistroRequestDTO("admin", "admin123", "ADMIN"));
-            createUserFacade.createUser(new RegistroRequestDTO("usuario", "password123", "USER"));
-            createUserFacade.createUser(new RegistroRequestDTO("test", "test123", "USER"));
+            createUserFacade.execute(new RegisterRequestDTO("admin", "admin123", "ADMIN"));
+            createUserFacade.execute(new RegisterRequestDTO("usuario", "password123", "USER"));
+            createUserFacade.execute(new RegisterRequestDTO("test", "test123", "USER"));
             
             String mensaje = "Usuarios de prueba creados exitosamente:\n" +
                 "- admin / admin123 (ADMIN)\n" +
