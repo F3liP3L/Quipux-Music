@@ -13,21 +13,16 @@ public class CorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Orígenes permitidos
+        var configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
-            "http://localhost:*",         // HTTP local
-            "https://localhost:*",          // HTTPS local
+            "http://localhost:*",
+            "https://localhost:*",
             "http://localhost:4200"
         ));
-        
-        // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList(
             "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
         ));
-        
-        // Headers permitidos
+
         configuration.setAllowedHeaders(Arrays.asList(
             "Origin",
             "Content-Type",
@@ -39,8 +34,7 @@ public class CorsConfig {
             "Cache-Control",
             "Pragma"
         ));
-        
-        // Headers expuestos al cliente
+
         configuration.setExposedHeaders(Arrays.asList(
             "Access-Control-Allow-Origin",
             "Access-Control-Allow-Credentials",
@@ -49,12 +43,9 @@ public class CorsConfig {
         ));
         
         configuration.setAllowCredentials(true);
-        
         configuration.setMaxAge(3600L);
-        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
         return source;
     }
 } 

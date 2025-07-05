@@ -1,62 +1,59 @@
 package com.quipuxmusic.core.application.dto;
 
-public class SongDTO {
-    private String title;
-    private String artist;
+public final class SongDTO {
+    private String titulo;
+    private String artista;
     private String album;
-    private String year;
-    private String genre;
-    
-    // Default constructor
+    private String anno;
+    private String genero;
+
     public SongDTO() {}
-    
-    // Constructor with all fields
-    public SongDTO(String title, String artist, String album, String year, String genre) {
-        this.title = title;
-        this.artist = artist;
+
+    public SongDTO(String titulo, String artista, String album, String anno, String genero) {
+        this.titulo = titulo;
+        this.artista = artista;
         this.album = album;
-        this.year = year;
-        this.genre = genre;
+        this.anno = anno;
+        this.genero = genero;
     }
-    
-    // Getters and Setters
-    public String getTitle() {
-        return title;
+
+    public String getTitulo() {
+        return titulo;
     }
-    
-    public void setTitle(String title) {
-        this.title = title;
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
-    
-    public String getArtist() {
-        return artist;
+
+    public String getArtista() {
+        return artista;
     }
-    
-    public void setArtist(String artist) {
-        this.artist = artist;
+
+    public void setArtista(String artista) {
+        this.artista = artista;
     }
-    
+
     public String getAlbum() {
         return album;
     }
-    
+
     public void setAlbum(String album) {
         this.album = album;
     }
-    
-    public String getYear() {
-        return year;
+
+    public String getAnno() {
+        return anno;
     }
-    
-    public void setYear(String year) {
-        this.year = year;
+
+    public void setAnno(String anno) {
+        this.anno = anno;
     }
-    
-    public String getGenre() {
-        return genre;
+
+    public String getGenero() {
+        return genero;
     }
-    
-    public void setGenre(String genre) {
-        this.genre = genre;
+
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
-} 
+}

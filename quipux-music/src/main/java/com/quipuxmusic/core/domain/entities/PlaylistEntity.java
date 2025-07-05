@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "playlists")
-public class Playlist {
+public class PlaylistEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +27,19 @@ public class Playlist {
         joinColumns = @JoinColumn(name = "playlist_id"),
         inverseJoinColumns = @JoinColumn(name = "song_id")
     )
-    private List<Song> songs = new ArrayList<>();
+    private List<SongEntity> songEntities = new ArrayList<>();
 
-    public Playlist() {}
+    public PlaylistEntity() {}
 
-    public Playlist(String name, String description) {
+    public PlaylistEntity(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public Playlist(String name, String description, List<Song> songs) {
+    public PlaylistEntity(String name, String description, List<SongEntity> songEntities) {
         this.name = name;
         this.description = description;
-        this.songs = songs != null ? songs : new ArrayList<>();
+        this.songEntities = songEntities != null ? songEntities : new ArrayList<>();
     }
     
     // Getters and Setters
@@ -67,33 +67,30 @@ public class Playlist {
         this.description = description;
     }
     
-    public List<Song> getSongs() {
-        return songs;
+    public List<SongEntity> getSongs() {
+        return songEntities;
     }
     
-    public void setSongs(List<Song> songs) {
-        this.songs = songs != null ? songs : new ArrayList<>();
+    public void setSongs(List<SongEntity> songEntities) {
+        this.songEntities = songEntities != null ? songEntities : new ArrayList<>();
     }
-    
-    // Helper methods
-    public void addSong(Song song) {
-        if (song != null && !songs.contains(song)) {
-            songs.add(song);
+
+    public void addSong(SongEntity songEntity) {
+        if (songEntity != null && !songEntities.contains(songEntity)) {
+            songEntities.add(songEntity);
         }
     }
     
-    public void removeSong(Song song) {
-        songs.remove(song);
+    public void removeSong(SongEntity songEntity) {
+        songEntities.remove(songEntity);
     }
     
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
-        Playlist playlist = (Playlist) o;
-        
-        return name.equals(playlist.name);
+        PlaylistEntity playlistEntity = (PlaylistEntity) o;
+        return name.equals(playlistEntity.name);
     }
     
     @Override
@@ -107,7 +104,7 @@ public class Playlist {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", songsCount=" + (songs != null ? songs.size() : 0) +
+                ", songsCount=" + (songEntities != null ? songEntities.size() : 0) +
                 '}';
     }
 } 

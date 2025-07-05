@@ -1,7 +1,11 @@
 package com.quipuxmusic.infrastructure.adapter.primary.controller;
 
 import com.quipuxmusic.core.application.dto.PlaylistDTO;
-import com.quipuxmusic.core.application.service.PlaylistService;
+import com.quipuxmusic.core.application.dto.MessageResponseDTO;
+import com.quipuxmusic.core.application.facade.CreatePlaylistFacade;
+import com.quipuxmusic.core.application.facade.GetAllPlaylistsFacade;
+import com.quipuxmusic.core.application.facade.GetPlaylistByNameFacade;
+import com.quipuxmusic.core.application.facade.DeletePlaylistFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +21,37 @@ import java.util.List;
 @RequestMapping("/lists")
 public class PlaylistController {
 
-    private final PlaylistService playlistService;
+    private final CreatePlaylistFacade createPlaylistFacade;
+    private final GetAllPlaylistsFacade getAllPlaylistsFacade;
+    private final GetPlaylistByNameFacade getPlaylistByNameFacade;
+    private final DeletePlaylistFacade deletePlaylistFacade;
 
     @Autowired
-    public PlaylistController(PlaylistService playlistService) {
-        this.playlistService = playlistService;
+    public PlaylistController(CreatePlaylistFacade createPlaylistFacade,
+                            GetAllPlaylistsFacade getAllPlaylistsFacade,
+                            GetPlaylistByNameFacade getPlaylistByNameFacade,
+                            DeletePlaylistFacade deletePlaylistFacade) {
+        this.createPlaylistFacade = createPlaylistFacade;
+        this.getAllPlaylistsFacade = getAllPlaylistsFacade;
+        this.getPlaylistByNameFacade = getPlaylistByNameFacade;
+        this.deletePlaylistFacade = deletePlaylistFacade;
     }
 
     @PostMapping
     public ResponseEntity<?> createPlaylist(@RequestBody PlaylistDTO playlistDTO) {
         try {
-            PlaylistDTO created = playlistService.createPlaylist(playlistDTO);
-            String encodedName = URLEncoder.encode(created.getName(), StandardCharsets.UTF_8);
+            PlaylistDTO created = createPlaylistFacade.createPlaylist(playlistDTO);
+            String encodedName = URLEncoder.encode(created.getNombre(), StandardCharsets.UTF_8);
             return ResponseEntity.created(URI.create("/lists/" + encodedName)).body(created);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al crear lista: " + e.getMessage());
+        } catch (Exception e) {
+            MessageResponseDTO error = new MessageResponseDTO("Error al crear lista: " + e.getMessage(), "ERROR");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
 
     @GetMapping
     public ResponseEntity<List<PlaylistDTO>> getAllPlaylists() {
-        List<PlaylistDTO> playlists = playlistService.getAllPlaylists();
+        List<PlaylistDTO> playlists = getAllPlaylistsFacade.getAllPlaylists();
         return ResponseEntity.ok(playlists);
     }
 
@@ -45,10 +59,11 @@ public class PlaylistController {
     public ResponseEntity<?> getPlaylist(@PathVariable String listName) {
         try {
             String decodedName = URLDecoder.decode(listName, StandardCharsets.UTF_8);
-            PlaylistDTO playlist = playlistService.getPlaylistByName(decodedName);
+            PlaylistDTO playlist = getPlaylistByNameFacade.getPlaylistByName(decodedName);
             return ResponseEntity.ok(playlist);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error al buscar lista: " + e.getMessage());
+        } catch (Exception e) {
+            MessageResponseDTO error = new MessageResponseDTO("Error al buscar lista: " + e.getMessage(), "ERROR");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 
@@ -56,10 +71,11 @@ public class PlaylistController {
     public ResponseEntity<?> deletePlaylist(@PathVariable String listName) {
         try {
             String decodedName = URLDecoder.decode(listName, StandardCharsets.UTF_8);
-            playlistService.deletePlaylist(decodedName);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error al eliminar lista: " + e.getMessage());
+            MessageResponseDTO response = deletePlaylistFacade.deletePlaylist(decodedName);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            MessageResponseDTO error = new MessageResponseDTO("Error al eliminar lista: " + e.getMessage(), "ERROR");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 } 

@@ -2,45 +2,45 @@ package com.quipuxmusic.core.application.dto;
 
 import java.util.List;
 
-public class PlaylistDTO {
-    private String name;
-    private String description;
-    private List<SongDTO> songs;
+public final class PlaylistDTO {
+    private String nombre;
+    private String descripcion;
+    private List<SongDTO> canciones;
 
     public PlaylistDTO() {}
 
-    public PlaylistDTO(String name, String description) {
-        this.name = name;
-        this.description = description;
+    public PlaylistDTO(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
     }
 
-    public PlaylistDTO(String name, String description, List<SongDTO> songs) {
-        this.name = name;
-        this.description = description;
-        this.songs = songs;
+    public PlaylistDTO(String nombre, String descripcion, List<SongDTO> canciones) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.canciones = canciones;
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
     
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
     
-    public String getDescription() {
-        return description;
+    public String getDescripcion() {
+        return descripcion;
     }
     
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     
-    public List<SongDTO> getSongs() {
-        return songs;
+    public List<SongDTO> getCanciones() {
+        return canciones;
     }
     
-    public void setSongs(List<SongDTO> songs) {
-        this.songs = songs;
+    public void setCanciones(List<SongDTO> canciones) {
+        this.canciones = canciones;
     }
 } 

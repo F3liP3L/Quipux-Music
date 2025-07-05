@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "songs")
-public class Song {
+public class SongEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +31,9 @@ public class Song {
     @Column(nullable = false)
     private String genre;
 
-    public Song() {}
+    public SongEntity() {}
 
-    public Song(String title, String artist, String album, String year, String genre) {
+    public SongEntity(String title, String artist, String album, String year, String genre) {
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -94,13 +94,13 @@ public class Song {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
-        Song song = (Song) o;
+        SongEntity songEntity = (SongEntity) o;
         
-        if (!title.equals(song.title)) return false;
-        if (!artist.equals(song.artist)) return false;
-        if (!album.equals(song.album)) return false;
-        if (!year.equals(song.year)) return false;
-        return genre.equals(song.genre);
+        if (!title.equals(songEntity.title)) return false;
+        if (!artist.equals(songEntity.artist)) return false;
+        if (!album.equals(songEntity.album)) return false;
+        if (!year.equals(songEntity.year)) return false;
+        return genre.equals(songEntity.genre);
     }
     
     @Override

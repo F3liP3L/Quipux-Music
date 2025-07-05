@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,24 +21,20 @@ public class User {
     
     @Column(nullable = false)
     private String role = "USER";
-    
-    // Default constructor
-    public User() {}
-    
-    // Constructor with username and password
-    public User(String username, String password) {
+
+    public UserEntity() {}
+
+    public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
     }
-    
-    // Constructor with all fields
-    public User(String username, String password, String role) {
+
+    public UserEntity(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
-    
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -75,10 +71,8 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
-        User user = (User) o;
-        
-        return username.equals(user.username);
+        var userEntity = (UserEntity) o;
+        return username.equals(userEntity.username);
     }
     
     @Override

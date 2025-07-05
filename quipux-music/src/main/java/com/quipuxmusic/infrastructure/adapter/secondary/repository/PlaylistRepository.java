@@ -1,15 +1,15 @@
 package com.quipuxmusic.infrastructure.adapter.secondary.repository;
 
-import com.quipuxmusic.core.domain.entities.Playlist;
+import com.quipuxmusic.core.domain.entities.PlaylistEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
+public interface PlaylistRepository extends JpaRepository<PlaylistEntity, Long> {
     
-    Optional<Playlist> findByName(String name);
+    Optional<PlaylistEntity> findByName(String name);
     
     boolean existsByName(String name);
     

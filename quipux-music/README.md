@@ -108,7 +108,7 @@ Authorization: Bearer <token>
 {
     "name": "Mi Lista Favorita",
     "description": "Canciones que me gustan",
-    "songs": [
+    "songEntities": [
         {
             "title": "Bohemian Rhapsody",
             "artist": "Queen",
@@ -275,7 +275,7 @@ Body:
 {
     "name": "Rock Clásico",
     "description": "Los mejores del rock",
-    "songs": [
+    "songEntities": [
         {
             "title": "Stairway to Heaven",
             "artist": "Led Zeppelin",
@@ -312,7 +312,7 @@ await api.login('usuario', 'password123');
 const lista = await api.createPlaylist({
     name: 'Mi Lista',
     description: 'Descripción',
-    songs: [...]
+    songEntities: [...]
 });
 ```
 
