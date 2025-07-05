@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - PlaylistValidator")
-class PlaylistDomainValidatorTest {
+class PlaylistValidatorTest {
 
     @Mock
     private PlaylistRepositoryPort playlistRepositoryPort;

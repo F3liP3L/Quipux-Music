@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - CreateUserUseCaseImpl")
-class CreateUserDomainUseCaseImplTest {
+class CreateUserUseCaseImplTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;

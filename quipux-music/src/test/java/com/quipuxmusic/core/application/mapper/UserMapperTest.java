@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Pruebas Unitarias - UserMapper")
-class UserDomainMapperTest {
+class UserMapperTest {
 
     private UserMapper userMapper;
 

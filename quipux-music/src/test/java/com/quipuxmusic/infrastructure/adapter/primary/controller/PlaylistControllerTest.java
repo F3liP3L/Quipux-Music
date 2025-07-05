@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - PlaylistController")
-class PlaylistDomainControllerTest {
+class PlaylistControllerTest {
 
     @Mock
     private CreatePlaylistFacade createPlaylistFacade;

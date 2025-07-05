@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - UserValidator")
-class UserDomainValidatorTest {
+class UserValidatorTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;

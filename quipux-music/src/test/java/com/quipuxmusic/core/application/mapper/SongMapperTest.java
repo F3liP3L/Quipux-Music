@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Pruebas Unitarias - SongMapper")
-class SongDomainMapperTest {
+class SongMapperTest {
 
     private SongMapper songMapper;
 

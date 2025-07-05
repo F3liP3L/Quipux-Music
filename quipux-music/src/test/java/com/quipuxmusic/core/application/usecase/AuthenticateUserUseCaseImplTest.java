@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - AuthenticateUserUseCaseImpl")
-class AuthenticateUserDomainUseCaseImplTest {
+class AuthenticateUserUseCaseImplTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - PlaylistMapper")
-class PlaylistDomainMapperTest {
+class PlaylistMapperTest {
 
     @Mock
     private SongMapper songMapper;
