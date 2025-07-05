@@ -1,15 +1,53 @@
-# API de Listas de Reproducción
+# Quipux Music API
 
-Esta es una API REST para gestionar listas de reproducción de música, implementada con Spring Boot, JPA, H2 y autenticación JWT.
+Una API REST para gestión de listas de reproducción de música, implementada con **Arquitectura Limpia (Clean Architecture)** y **Spring Boot**.
 
-## Características
+## Arquitectura del Proyecto
 
-- ✅ Autenticación y autorización con JWT
-- ✅ Gestión de listas de reproducción (CRUD)
-- ✅ Base de datos H2 en memoria
-- ✅ Validaciones de entrada
-- ✅ Manejo global de errores
-- ✅ Arquitectura limpia
+Este proyecto sigue los principios de **Arquitectura Limpia**, implementando una separación clara de responsabilidades y dependencias:
+
+```
+src/main/java/com/quipuxmusic/
+├── core/                          # Capa de Dominio y Aplicación
+│   ├── domain/                    # Reglas de negocio centrales
+│   │   ├── domains/               # Entidades del dominio
+│   │   │   ├── User.java
+│   │   │   ├── Playlist.java
+│   │   │   └── Song.java
+│   │   ├── entities/              # Entidades JPA
+│   │   │   ├── UserEntity.java
+│   │   │   ├── PlaylistEntity.java
+│   │   │   └── SongEntity.java
+│   │   ├── exception/             # Excepciones customizadas
+│   │   ├── port/                  # Interfaces de puertos
+│   │   ├── usecase/               # Casos de uso (interfaces)
+│   │   └── validator/             # Validadores de dominio
+│   └── application/               # Capa de aplicación
+│       ├── dto/                   # DTOs de transferencia
+│       ├── facade/                # Fachadas de aplicación
+│       ├── mapper/                # Mappers para conversión
+│       └── usecase/               # Implementaciones de casos de uso
+└── infrastructure/                # Capa de infraestructura
+    ├── adapter/                   # Adaptadores
+    │   ├── primary/               # Adaptadores primarios (entrada)
+    │   │   └── controller/        # Controladores REST
+    │   └── secondary/             # Adaptadores secundarios (salida)
+    │       ├── repository/        # Repositorios JPA
+    │       └── service/           # Servicios externos
+    ├── configuration/             # Configuración de Spring
+    └── init/                      # Inicialización
+```
+
+## Características Principales
+
+-  **Arquitectura Limpia**: Separación clara de responsabilidades
+- **Autenticación JWT**: Sistema seguro de autenticación
+- **Gestión de Playlists**: CRUD completo de listas de reproducción
+- **Pruebas Unitarias**: Cobertura completa con JUnit 5 y Mockito
+-  **Base de Datos H2**: Base de datos en memoria para desarrollo
+- **CORS Configurado**: Soporte para aplicaciones frontend
+- **Validaciones**: Validaciones de dominio y entrada
+- **Manejo de Errores**: Sistema global de manejo de excepciones
 
 ## Tecnologías
 
@@ -18,139 +56,158 @@ Esta es una API REST para gestionar listas de reproducción de música, implemen
 - **Spring Security + JWT**
 - **Spring Data JPA**
 - **H2 Database**
+- **JUnit 5 + Mockito**
 - **Maven**
 
-## Endpoints de la API
+## Instalación y Ejecución
 
-### Autenticación
+### Prerrequisitos
+- Java 17 o superior
+- Maven 3.6+
 
-**Nota:** Los endpoints de autenticación son públicos y no requieren token previo.
+### Pasos de Instalación
 
-### 🔒 Configuración de Seguridad
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/F3liP3L/Quipux-Music.git
+   cd quipux-music
+   ```
 
-La aplicación está configurada con Spring Security y JWT:
+2. **Compilar el proyecto**
+   ```bash
+   mvn clean compile
+   ```
 
-- **Rutas públicas:** `/auth/**` (registro, login, crear usuarios de prueba)
-- **Rutas protegidas:** Todas las demás rutas requieren token JWT válido
-- **Consola H2:** `/h2-console/**` (accesible para desarrollo)
+3. **Ejecutar la aplicación**
+   ```bash
+   mvn spring-boot:run
+   ```
 
-### 🌐 Configuración CORS
+4. **La aplicación estará disponible en:** `http://localhost:8080`
 
-La aplicación incluye configuración CORS para permitir acceso desde aplicaciones frontend:
+## Pruebas
 
-**Orígenes permitidos:**
-- `http://localhost:*` - Desarrollo local
-- `http://localhost:3000` - React default
-- `http://localhost:4200` - Angular default
-- `http://localhost:8081` - Vue default
-- `http://localhost:5173` - Vite default
-- `https://*.vercel.app` - Vercel deployments
-- `https://*.netlify.app` - Netlify deployments
-- `https://*.github.io` - GitHub Pages
-- `https://*.herokuapp.com` - Heroku deployments
-
-**Configuración para desarrollo:**
+### Ejecutar Todas las Pruebas
 ```bash
-# Activar perfil de desarrollo (CORS más permisivo)
-mvn spring-boot:run -Dspring.profiles.active=dev
+mvn test
 ```
 
-**Códigos de estado HTTP:**
-- `200 OK` - Operación exitosa
-- `201 Created` - Recurso creado exitosamente
-- `401 Unauthorized` - Token inválido o ausente
-- `403 Forbidden` - Acceso denegado
-- `404 Not Found` - Recurso no encontrado
+### Ejecutar Pruebas con Reporte de Cobertura
+```bash
+mvn test jacoco:report
+```
+
+### Ejecutar Pruebas Específicas
+```bash
+# Pruebas de validadores
+mvn test -Dtest="com.quipuxmusic.core.domain.validator.*"
+
+# Pruebas de casos de uso
+mvn test -Dtest="com.quipuxmusic.core.application.usecase.*"
+
+# Pruebas de controladores
+mvn test -Dtest="com.quipuxmusic.infrastructure.adapter.primary.controller.*"
+```
+
+## Autenticación
+
+### Endpoints Públicos
+Los siguientes endpoints no requieren autenticación:
 
 #### 1. Registrar Usuario
-```
+```http
 POST /auth/register
 Content-Type: application/json
 
 {
-    "username": "usuario",
-    "password": "password123",
-    "role": "USER"
+    "nombreUsuario": "usuario",
+    "contrasena": "password123",
+    "rol": "USER"
 }
 ```
 
 #### 2. Iniciar Sesión
-```
+```http
 POST /auth/login
 Content-Type: application/json
 
 {
-    "username": "usuario",
-    "password": "password123"
+    "nombreUsuario": "usuario",
+    "contrasena": "password123"
 }
 ```
 
 **Respuesta:**
 ```json
 {
-    "token": "eyJhbGciOiJIUzUxMiJ9..."
+    "token": "eyJhbGciOiJIUzUxMiJ9...",
+    "nombreUsuario": "usuario",
+    "rol": "USER",
+    "message": "Login exitoso",
+    "status": "EXITO"
 }
 ```
 
-### Listas de Reproducción
-
-**Nota:** Todos los endpoints de listas requieren autenticación. Incluir el token en el header:
+#### 3. Crear Usuarios de Prueba
+```http
+POST /auth/create-test-users
 ```
+
+Crea automáticamente:
+- **admin** / **admin123** (ADMIN)
+- **usuario** / **password123** (USER)
+- **test** / **test123** (USER)
+
+### Endpoints Protegidos
+Todos los demás endpoints requieren el header de autorización:
+```http
 Authorization: Bearer <token>
 ```
 
-#### 1. Crear Lista de Reproducción
-```
+## Gestión de Playlists
+
+### 1. Crear Playlist
+```http
 POST /lists
-Content-Type: application/json
 Authorization: Bearer <token>
+Content-Type: application/json
 
 {
-    "name": "Mi Lista Favorita",
-    "description": "Canciones que me gustan",
-    "songEntities": [
+    "nombre": "Mi Playlist",
+    "descripcion": "Descripción de la playlist",
+    "canciones": [
         {
-            "title": "Bohemian Rhapsody",
-            "artist": "Queen",
+            "titulo": "Bohemian Rhapsody",
+            "artista": "Queen",
             "album": "A Night at the Opera",
-            "year": "1975",
-            "genre": "Rock"
+            "anio": 1975,
+            "genero": "Rock"
         }
     ]
 }
 ```
 
-**Respuesta:** `201 Created` con la lista creada
-
-#### 2. Obtener Todas las Listas
-```
+### 2. Obtener Todas las Playlists
+```http
 GET /lists
 Authorization: Bearer <token>
 ```
 
-**Respuesta:** `200 OK` con array de listas
-
-#### 3. Obtener Lista por Nombre
-```
-GET /lists/{listName}
+### 3. Obtener Playlist por Nombre
+```http
+GET /lists/{nombre}
 Authorization: Bearer <token>
 ```
 
-**Nota:** Si el nombre contiene espacios o caracteres especiales, debe codificarse en la URL:
-- `Pop Latino` → `Pop%20Latino`
+**Nota:** Los nombres con espacios o caracteres especiales deben codificarse:
+- `Mi Playlist` → `Mi%20Playlist`
 - `Rock & Roll` → `Rock%20%26%20Roll`
 
-**Respuesta:** `200 OK` con la lista o `404 Not Found`
-
-#### 4. Eliminar Lista
-```
-DELETE /lists/{listName}
+### 4. Eliminar Playlist
+```http
+DELETE /lists/{nombre}
 Authorization: Bearer <token>
 ```
-
-**Nota:** Aplican las mismas reglas de codificación que para GET.
-
-**Respuesta:** `204 No Content` o `404 Not Found`
 
 ## Códigos de Estado HTTP
 
@@ -158,195 +215,133 @@ Authorization: Bearer <token>
 - `201 Created` - Recurso creado exitosamente
 - `204 No Content` - Operación exitosa sin contenido
 - `400 Bad Request` - Datos de entrada inválidos
-- `401 Unauthorized` - No autenticado
+- `401 Unauthorized` - No autenticado o token inválido
 - `404 Not Found` - Recurso no encontrado
+- `409 Conflict` - Recurso duplicado
 - `500 Internal Server Error` - Error del servidor
 
-## Ejecutar la Aplicación
+## Base de Datos
 
-1. **Clonar el repositorio**
-2. **Ejecutar con Maven:**
-   ```bash
-   mvn spring-boot:run
-   ```
-3. **La aplicación estará disponible en:** `http://localhost:8080`
-
-## Scripts de Prueba
-
-### Test de Arranque
-```bash
-./test-startup.sh
-```
-Verifica que la aplicación arranca sin errores de dependencias cíclicas.
-
-### Test de Tablas
-```bash
-./test-tables.sh
-```
-Verifica que las tablas se crean correctamente al arrancar.
-
-### Test de Dependencias
-```bash
-./test-dependencies.sh
-```
-Verifica que todas las dependencias están correctamente configuradas.
-
-### Test de Seguridad
-```bash
-./test-security.sh
-```
-Verifica que las rutas están correctamente protegidas y que la autenticación JWT funciona.
-
-### Test de CORS
-```bash
-./test-cors.sh
-```
-Verifica que la configuración CORS funciona correctamente para aplicaciones frontend.
-
-## Usuarios de Prueba
-
-Para crear usuarios de prueba, ejecutar:
-```bash
-curl -X POST http://localhost:8080/auth/create-test-users
-```
-
-Esto creará:
-- **Usuario:** `admin` / **Contraseña:** `admin123` / **Rol:** `ADMIN`
-- **Usuario:** `usuario` / **Contraseña:** `password123` / **Rol:** `USER`
-- **Usuario:** `test` / **Contraseña:** `test123` / **Rol:** `USER`
-
-## Base de Datos H2
-
+### H2 Console (Solo Desarrollo)
 - **URL:** `http://localhost:8080/h2-console`
 - **JDBC URL:** `jdbc:h2:mem:testdb`
 - **Usuario:** `sa`
 - **Contraseña:** `password`
 
-## Configuración JPA
-
-La aplicación está configurada para crear automáticamente las tablas al arrancar:
-
+### Configuración JPA
 ```properties
 spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=false
 ```
 
-Esto significa que:
-- **create-drop**: Las tablas se crean al iniciar y se eliminan al cerrar
-- Las tablas se crean automáticamente basándose en las entidades JPA
-- No es necesario crear manualmente las tablas en la base de datos
+## Configuración CORS
 
-### ⚠️ Nota Importante sobre Nombres de Columnas
+La API incluye configuración CORS para desarrollo frontend:
 
-En la entidad `Song`, la columna `year` se mapea como `release_year` en la base de datos porque `year` es una palabra reservada en H2:
+**Orígenes permitidos:**
+- `http://localhost:*`
+- `http://localhost:4200` (Angular)
 
-```java
-@Column(name = "release_year", nullable = false)
-private String year;
-```
-
-Esto evita errores de sintaxis SQL al crear las tablas.
-
-## Ejemplo de Uso con Postman
-
-### 🔓 Paso 1: Autenticación (Ruta Pública)
-```
-POST http://localhost:8080/auth/login
-Content-Type: application/json
-
-Body:
-{
-    "username": "usuario",
-    "password": "password123"
-}
-
-Respuesta:
-{
-    "token": "eyJhbGciOiJIUzUxMiJ9..."
-}
-```
-
-### 🔒 Paso 2: Crear Lista (Ruta Protegida)
-```
-POST http://localhost:8080/lists
-Content-Type: application/json
-Authorization: Bearer <token_del_paso_anterior>
-
-Body:
-{
-    "name": "Rock Clásico",
-    "description": "Los mejores del rock",
-    "songEntities": [
-        {
-            "title": "Stairway to Heaven",
-            "artist": "Led Zeppelin",
-            "album": "Led Zeppelin IV",
-            "year": "1971",
-            "genre": "Rock"
-        }
-    ]
-}
-```
-
-### 🔒 Paso 3: Obtener Listas (Ruta Protegida)
-```
-GET http://localhost:8080/lists
-Authorization: Bearer <token>
-```
-
-### ⚠️ Nota Importante
-- **Sin token:** Las rutas protegidas devuelven `401 Unauthorized`
-- **Token inválido:** Las rutas protegidas devuelven `401 Unauthorized`
-- **Token válido:** Las rutas protegidas funcionan normalmente
-
-## 🌐 Uso desde Frontend
-
-### Ejemplo con JavaScript
-```javascript
-// Incluir el archivo examples/frontend-example.js
-const api = new PlaylistAPI();
-
-// Autenticación
-await api.login('usuario', 'password123');
-
-// Crear lista
-const lista = await api.createPlaylist({
-    name: 'Mi Lista',
-    description: 'Descripción',
-    songEntities: [...]
-});
-```
-
-### Headers CORS Incluidos
-La API incluye automáticamente los headers CORS necesarios:
-- `Access-Control-Allow-Origin`
-- `Access-Control-Allow-Methods`
-- `Access-Control-Allow-Headers`
-- `Access-Control-Allow-Credentials`
-
-## Estructura del Proyecto
+## Estructura de Pruebas
 
 ```
-src/main/java/com/quipuxmovie/
+src/test/java/com/quipuxmusic/
 ├── core/
 │   ├── domain/
-│   │   ├── entities/          # Entidades JPA
-│   │   └── dto/              # DTOs
+│   │   ├── validator/
+│   │   │   ├── UserValidatorTest.java
+│   │   │   └── PlaylistValidatorTest.java
+│   │   └── domains/
+│   │       └── UserTest.java
 │   └── application/
-│       ├── service/          # Lógica de negocio
-│       └── dto/              # DTOs de aplicación
+│       ├── usecase/
+│       │   ├── CreateUserUseCaseImplTest.java
+│       │   └── AuthenticateUserUseCaseImplTest.java
+│       └── mapper/
+│           ├── UserMapperTest.java
+│           ├── PlaylistMapperTest.java
+│           └── SongMapperTest.java
 └── infrastructure/
-    ├── adapter/
-    │   ├── primary/
-    │   │   └── controller/   # Controladores REST
-    │   └── secondary/
-    │       └── repository/   # Repositorios JPA
-    ├── configuration/        # Configuración de seguridad
-    └── init/                # Inicialización de datos
+    └── adapter/
+        └── primary/
+            └── controller/
+                ├── AuthControllerTest.java
+                └── PlaylistControllerTest.java
 ```
 
-## Validaciones
+## Configuración de Desarrollo
 
-- El nombre de la lista no puede ser nulo o vacío
-- No pueden existir dos listas con el mismo nombre
-- Todos los campos de canción son requeridos
-- El nombre de usuario debe ser único 
+### Perfil de Desarrollo
+```bash
+mvn spring-boot:run -Dspring.profiles.active=dev
+```
+
+### Configuración de Pruebas
+El archivo `src/test/resources/application-test.properties` contiene la configuración específica para pruebas.
+
+## Ejemplos de Uso
+
+### Con cURL
+
+#### 1. Autenticación
+```bash
+# Registrar usuario
+curl -X POST http://localhost:8080/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"nombreUsuario":"testuser","contrasena":"password123","rol":"USER"}'
+
+# Login
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"nombreUsuario":"testuser","contrasena":"password123"}'
+```
+
+#### 2. Crear Playlist
+```bash
+curl -X POST http://localhost:8080/lists \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{
+    "nombre": "Mi Playlist",
+    "descripcion": "Descripción",
+    "canciones": [
+      {
+        "titulo": "Bohemian Rhapsody",
+        "artista": "Queen",
+        "album": "A Night at the Opera",
+        "anio": 1975,
+        "genero": "Rock"
+      }
+    ]
+  }'
+```
+
+### Con JavaScript
+```javascript
+// Autenticación
+const loginResponse = await fetch('http://localhost:8080/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    nombreUsuario: 'usuario',
+    contrasena: 'password123'
+  })
+});
+
+const { token } = await loginResponse.json();
+
+// Crear playlist
+const playlistResponse = await fetch('http://localhost:8080/lists', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify({
+    nombre: 'Mi Playlist',
+    descripcion: 'Descripción',
+    canciones: []
+  })
+});
+```
