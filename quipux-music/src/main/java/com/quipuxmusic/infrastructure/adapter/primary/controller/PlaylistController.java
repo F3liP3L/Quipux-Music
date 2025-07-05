@@ -68,8 +68,8 @@ public class PlaylistController {
     public ResponseEntity<?> deletePlaylist(@PathVariable String listName) {
         try {
             String decodedName = URLDecoder.decode(listName, StandardCharsets.UTF_8);
-            MessageResponseDTO response = deletePlaylistFacade.execute(decodedName);
-            return ResponseEntity.ok(response);
+            deletePlaylistFacade.execute(decodedName);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             MessageResponseDTO error = new MessageResponseDTO("Error al eliminar lista: " + e.getMessage(), "ERROR");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);

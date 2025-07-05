@@ -242,11 +242,8 @@ class PlaylistControllerTest {
         when(deletePlaylistFacade.execute(listName)).thenReturn(expectedResponse);
         ResponseEntity<?> response = playlistController.deletePlaylist(encodedName);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        MessageResponseDTO responseBody = (MessageResponseDTO) response.getBody();
-        assertEquals("Lista de reproducción eliminada exitosamente", responseBody.getMensaje());
-        assertEquals("EXITO", responseBody.getTipo());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
         verify(deletePlaylistFacade).execute(listName);
     }
 
