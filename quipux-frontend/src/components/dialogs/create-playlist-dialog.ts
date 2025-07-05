@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormBuilder, FormArray, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators, ReactiveFormsModule, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListService } from '../../service/listService';
+import { HttpErrorResponse } from '@angular/common/http';
+
+function yearRangeValidator(minYear: number): ValidatorFn {
+  return (control: AbstractControl) => {
+    const value = control.value;
+    const currentYear = new Date().getFullYear();
+    if (value) {
+      if (Number(value) > currentYear) {
+        return { maxYear: true };
+      }
+      if (Number(value) < minYear) {
+        return { minYear: true };
+      }
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-create-playlist-dialog',
@@ -96,6 +113,12 @@ import { ListService } from '../../service/listService';
                 <mat-error *ngIf="song.get('anno')?.hasError('pattern')">
                   El año debe ser un número de 4 dígitos
                 </mat-error>
+                <mat-error *ngIf="song.get('anno')?.hasError('maxYear')">
+                  El año no puede ser mayor al actual
+                </mat-error>
+                <mat-error *ngIf="song.get('anno')?.hasError('minYear')">
+                  El año no puede ser menor a 1900
+                </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Género</mat-label>
@@ -157,10 +180,10 @@ export class CreatePlaylistDialog implements OnInit {
 
   addSong(): void {
     const songGroup = this.fb.group({
-      titulo: ['', [Validators.required, Validators.minLength(1)]],
-      artista: ['', [Validators.required, Validators.minLength(1)]],
-      album: ['', [Validators.required, Validators.minLength(1)]],
-      anno: ['', [Validators.required, Validators.pattern(/^[0-9]{4}$/)]],
+      titulo: ['', [Validators.required, Validators.minLength(2)]],
+      artista: ['', [Validators.required, Validators.minLength(2)]],
+      album: ['', [Validators.required, Validators.minLength(2)]],
+      anno: ['', [Validators.required, Validators.pattern(/^[0-9]{4}$/), yearRangeValidator(1900)]],
       genero: ['', [Validators.required, Validators.minLength(3)]]
     });
     this.cancionesArray.push(songGroup);
@@ -179,8 +202,9 @@ export class CreatePlaylistDialog implements OnInit {
           this._snackBar.open('Lista creada exitosamente', 'Cerrar', { duration: 3000 });
           this._dialogRef.close(true);
         },
-        error: (error) => {
-          this._snackBar.open('Error al crear la lista', 'Cerrar', { duration: 3000 });
+        error: (error: HttpErrorResponse) => {
+          const mensaje = 'Ya existe una lista con ese nombre. Por favor, elige un nombre diferente.';
+          this._snackBar.open(mensaje, 'Cerrar', { duration: 4000 });
         }
       });
     }
