@@ -1,8 +1,9 @@
 package com.quipuxmusic.core.application.usecase;
 
+import com.quipuxmusic.core.application.dto.LoginRequestDTO;
 import com.quipuxmusic.core.application.dto.LoginResponseDTO;
 import com.quipuxmusic.core.application.mapper.UserMapper;
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.domain.exception.AuthenticationException;
 import com.quipuxmusic.core.domain.port.JwtServicePort;
 import com.quipuxmusic.core.domain.port.PasswordEncoderPort;
@@ -16,7 +17,6 @@ import java.util.Optional;
 
 @Service
 public class AuthenticateUserUseCaseImpl implements AuthenticateUserUseCase {
-    
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
     private final JwtServicePort jwtServicePort;
@@ -37,23 +37,18 @@ public class AuthenticateUserUseCaseImpl implements AuthenticateUserUseCase {
     }
     
     @Override
-    public LoginResponseDTO execute(User user) {
-        // Validar datos del usuario
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre de usuario es requerido");
-        }
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña es requerida");
-        }
+    public LoginResponseDTO execute(UserDomain userDomain) {
+        var loginRequest = new LoginRequestDTO();
+        loginRequest.setNombreUsuario(userDomain.getUsername());
+        loginRequest.setContrasena(userDomain.getPassword());
+        userValidator.validateLoginRequest(loginRequest);
+
+        Optional<UserDomain> userOpt = userRepositoryPort.findByUsername(userDomain.getUsername());
         
-        // Buscar usuario en el repositorio
-        Optional<User> userOpt = userRepositoryPort.findByUsername(user.getUsername());
-        
-        if (userOpt.isPresent() && passwordEncoderPort.matches(user.getPassword(), userOpt.get().getPassword())) {
+        if (userOpt.isPresent() && passwordEncoderPort.matches(userDomain.getPassword(), userOpt.get().getPassword())) {
             String token = jwtServicePort.generateToken(userOpt.get());
             return userMapper.toLoginResponseDTO(userOpt.get(), token);
         }
-        
         throw new AuthenticationException("Usuario o contraseña inválidos");
     }
 } 

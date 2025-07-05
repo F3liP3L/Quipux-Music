@@ -7,69 +7,69 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Pruebas Unitarias - User Domain")
-class UserTest {
+class UserDomainTest {
 
-    private User user;
+    private UserDomain userDomain;
 
     @BeforeEach
     void setUp() {
-        user = new User();
+        userDomain = new UserDomain();
     }
 
     @Test
     @DisplayName("Debería crear User con constructor vacío")
     void shouldCreateUserWithEmptyConstructor() {
         // Act
-        User user = new User();
+        UserDomain userDomain = new UserDomain();
 
         // Assert
-        assertNotNull(user);
-        assertNull(user.getId());
-        assertNull(user.getUsername());
-        assertNull(user.getPassword());
-        assertNull(user.getRole());
+        assertNotNull(userDomain);
+        assertNull(userDomain.getId());
+        assertNull(userDomain.getUsername());
+        assertNull(userDomain.getPassword());
+        assertNull(userDomain.getRole());
     }
 
     @Test
     @DisplayName("Debería crear User con constructor de username y password")
     void shouldCreateUserWithUsernameAndPasswordConstructor() {
         // Act
-        User user = new User("testuser", "password123");
+        UserDomain userDomain = new UserDomain("testuser", "password123");
 
         // Assert
-        assertNotNull(user);
-        assertNull(user.getId());
-        assertEquals("testuser", user.getUsername());
-        assertEquals("password123", user.getPassword());
-        assertEquals("USER", user.getRole());
+        assertNotNull(userDomain);
+        assertNull(userDomain.getId());
+        assertEquals("testuser", userDomain.getUsername());
+        assertEquals("password123", userDomain.getPassword());
+        assertEquals("USER", userDomain.getRole());
     }
 
     @Test
     @DisplayName("Debería crear User con constructor de username, password y role")
     void shouldCreateUserWithUsernamePasswordAndRoleConstructor() {
         // Act
-        User user = new User("adminuser", "adminpass", "ADMIN");
+        UserDomain userDomain = new UserDomain("adminuser", "adminpass", "ADMIN");
 
         // Assert
-        assertNotNull(user);
-        assertNull(user.getId());
-        assertEquals("adminuser", user.getUsername());
-        assertEquals("adminpass", user.getPassword());
-        assertEquals("ADMIN", user.getRole());
+        assertNotNull(userDomain);
+        assertNull(userDomain.getId());
+        assertEquals("adminuser", userDomain.getUsername());
+        assertEquals("adminpass", userDomain.getPassword());
+        assertEquals("ADMIN", userDomain.getRole());
     }
 
     @Test
     @DisplayName("Debería crear User con constructor completo")
     void shouldCreateUserWithFullConstructor() {
         // Act
-        User user = new User(1L, "testuser", "password123", "USER");
+        UserDomain userDomain = new UserDomain(1L, "testuser", "password123", "USER");
 
         // Assert
-        assertNotNull(user);
-        assertEquals(1L, user.getId());
-        assertEquals("testuser", user.getUsername());
-        assertEquals("password123", user.getPassword());
-        assertEquals("USER", user.getRole());
+        assertNotNull(userDomain);
+        assertEquals(1L, userDomain.getId());
+        assertEquals("testuser", userDomain.getUsername());
+        assertEquals("password123", userDomain.getPassword());
+        assertEquals("USER", userDomain.getRole());
     }
 
     @Test
@@ -79,10 +79,10 @@ class UserTest {
         Long expectedId = 123L;
 
         // Act
-        user.setId(expectedId);
+        userDomain.setId(expectedId);
 
         // Assert
-        assertEquals(expectedId, user.getId());
+        assertEquals(expectedId, userDomain.getId());
     }
 
     @Test
@@ -92,10 +92,10 @@ class UserTest {
         String expectedUsername = "testuser";
 
         // Act
-        user.setUsername(expectedUsername);
+        userDomain.setUsername(expectedUsername);
 
         // Assert
-        assertEquals(expectedUsername, user.getUsername());
+        assertEquals(expectedUsername, userDomain.getUsername());
     }
 
     @Test
@@ -105,10 +105,10 @@ class UserTest {
         String expectedPassword = "securepassword123";
 
         // Act
-        user.setPassword(expectedPassword);
+        userDomain.setPassword(expectedPassword);
 
         // Assert
-        assertEquals(expectedPassword, user.getPassword());
+        assertEquals(expectedPassword, userDomain.getPassword());
     }
 
     @Test
@@ -118,127 +118,127 @@ class UserTest {
         String expectedRole = "MODERATOR";
 
         // Act
-        user.setRole(expectedRole);
+        userDomain.setRole(expectedRole);
 
         // Assert
-        assertEquals(expectedRole, user.getRole());
+        assertEquals(expectedRole, userDomain.getRole());
     }
 
     @Test
     @DisplayName("Debería manejar valores null en setters")
     void shouldHandleNullValuesInSetters() {
         // Act
-        user.setId(null);
-        user.setUsername(null);
-        user.setPassword(null);
-        user.setRole(null);
+        userDomain.setId(null);
+        userDomain.setUsername(null);
+        userDomain.setPassword(null);
+        userDomain.setRole(null);
 
         // Assert
-        assertNull(user.getId());
-        assertNull(user.getUsername());
-        assertNull(user.getPassword());
-        assertNull(user.getRole());
+        assertNull(userDomain.getId());
+        assertNull(userDomain.getUsername());
+        assertNull(userDomain.getPassword());
+        assertNull(userDomain.getRole());
     }
 
     @Test
     @DisplayName("Debería manejar valores vacíos en setters")
     void shouldHandleEmptyValuesInSetters() {
         // Act
-        user.setUsername("");
-        user.setPassword("");
-        user.setRole("");
+        userDomain.setUsername("");
+        userDomain.setPassword("");
+        userDomain.setRole("");
 
         // Assert
-        assertEquals("", user.getUsername());
-        assertEquals("", user.getPassword());
-        assertEquals("", user.getRole());
+        assertEquals("", userDomain.getUsername());
+        assertEquals("", userDomain.getPassword());
+        assertEquals("", userDomain.getRole());
     }
 
     @Test
     @DisplayName("Debería ser igual a sí mismo")
     void shouldBeEqualToItself() {
         // Arrange
-        user.setUsername("testuser");
+        userDomain.setUsername("testuser");
 
         // Act & Assert
-        assertEquals(user, user);
+        assertEquals(userDomain, userDomain);
     }
 
     @Test
     @DisplayName("Debería ser igual a otro User con mismo username")
     void shouldBeEqualToOtherUserWithSameUsername() {
         // Arrange
-        User user1 = new User("testuser", "password1", "USER");
-        User user2 = new User("testuser", "password2", "ADMIN");
+        UserDomain userDomain1 = new UserDomain("testuser", "password1", "USER");
+        UserDomain userDomain2 = new UserDomain("testuser", "password2", "ADMIN");
 
         // Act & Assert
-        assertEquals(user1, user2);
+        assertEquals(userDomain1, userDomain2);
     }
 
     @Test
     @DisplayName("No debería ser igual a otro User con diferente username")
     void shouldNotBeEqualToOtherUserWithDifferentUsername() {
         // Arrange
-        User user1 = new User("user1", "password1", "USER");
-        User user2 = new User("user2", "password1", "USER");
+        UserDomain userDomain1 = new UserDomain("user1", "password1", "USER");
+        UserDomain userDomain2 = new UserDomain("user2", "password1", "USER");
 
         // Act & Assert
-        assertNotEquals(user1, user2);
+        assertNotEquals(userDomain1, userDomain2);
     }
 
     @Test
     @DisplayName("No debería ser igual a null")
     void shouldNotBeEqualToNull() {
         // Arrange
-        user.setUsername("testuser");
+        userDomain.setUsername("testuser");
 
         // Act & Assert
-        assertNotEquals(null, user);
+        assertNotEquals(null, userDomain);
     }
 
     @Test
     @DisplayName("No debería ser igual a objeto de diferente tipo")
     void shouldNotBeEqualToObjectOfDifferentType() {
         // Arrange
-        user.setUsername("testuser");
+        userDomain.setUsername("testuser");
         String differentObject = "testuser";
 
         // Act & Assert
-        assertNotEquals(user, differentObject);
+        assertNotEquals(userDomain, differentObject);
     }
 
     @Test
     @DisplayName("Debería tener mismo hashCode para Users con mismo username")
     void shouldHaveSameHashCodeForUsersWithSameUsername() {
         // Arrange
-        User user1 = new User("testuser", "password1", "USER");
-        User user2 = new User("testuser", "password2", "ADMIN");
+        UserDomain userDomain1 = new UserDomain("testuser", "password1", "USER");
+        UserDomain userDomain2 = new UserDomain("testuser", "password2", "ADMIN");
 
         // Act & Assert
-        assertEquals(user1.hashCode(), user2.hashCode());
+        assertEquals(userDomain1.hashCode(), userDomain2.hashCode());
     }
 
     @Test
     @DisplayName("Debería tener diferente hashCode para Users con diferente username")
     void shouldHaveDifferentHashCodeForUsersWithDifferentUsername() {
         // Arrange
-        User user1 = new User("user1", "password1", "USER");
-        User user2 = new User("user2", "password1", "USER");
+        UserDomain userDomain1 = new UserDomain("user1", "password1", "USER");
+        UserDomain userDomain2 = new UserDomain("user2", "password1", "USER");
 
         // Act & Assert
-        assertNotEquals(user1.hashCode(), user2.hashCode());
+        assertNotEquals(userDomain1.hashCode(), userDomain2.hashCode());
     }
 
     @Test
     @DisplayName("Debería generar toString correcto")
     void shouldGenerateCorrectToString() {
         // Arrange
-        user.setId(1L);
-        user.setUsername("testuser");
-        user.setRole("USER");
+        userDomain.setId(1L);
+        userDomain.setUsername("testuser");
+        userDomain.setRole("USER");
 
         // Act
-        String result = user.toString();
+        String result = userDomain.toString();
 
         // Assert
         assertTrue(result.contains("User{"));
@@ -252,7 +252,7 @@ class UserTest {
     @DisplayName("Debería generar toString con valores null")
     void shouldGenerateToStringWithNullValues() {
         // Act
-        String result = user.toString();
+        String result = userDomain.toString();
 
         // Assert
         assertTrue(result.contains("User{"));
@@ -269,10 +269,10 @@ class UserTest {
         String specialUsername = "user@domain.com";
 
         // Act
-        user.setUsername(specialUsername);
+        userDomain.setUsername(specialUsername);
 
         // Assert
-        assertEquals(specialUsername, user.getUsername());
+        assertEquals(specialUsername, userDomain.getUsername());
     }
 
     @Test
@@ -282,9 +282,9 @@ class UserTest {
         String roleWithSpaces = "SUPER ADMIN";
 
         // Act
-        user.setRole(roleWithSpaces);
+        userDomain.setRole(roleWithSpaces);
 
         // Assert
-        assertEquals(roleWithSpaces, user.getRole());
+        assertEquals(roleWithSpaces, userDomain.getRole());
     }
 } 

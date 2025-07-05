@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - UserValidator")
-class UserValidatorTest {
+class UserDomainValidatorTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
@@ -103,7 +103,7 @@ class UserValidatorTest {
 
         when(userRepositoryPort.existsByUsername("newuser")).thenReturn(false);
 
-        assertDoesNotThrow(() -> userValidator.validateRegistroRequest(request));
+        assertDoesNotThrow(() -> userValidator.validateRegisterRequest(request));
         verify(userRepositoryPort).existsByUsername("newuser");
     }
 
@@ -116,7 +116,7 @@ class UserValidatorTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> userValidator.validateRegistroRequest(request)
+            () -> userValidator.validateRegisterRequest(request)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
     }
@@ -130,7 +130,7 @@ class UserValidatorTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> userValidator.validateRegistroRequest(request)
+            () -> userValidator.validateRegisterRequest(request)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
     }
@@ -144,7 +144,7 @@ class UserValidatorTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> userValidator.validateRegistroRequest(request)
+            () -> userValidator.validateRegisterRequest(request)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
     }
@@ -158,7 +158,7 @@ class UserValidatorTest {
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> userValidator.validateRegistroRequest(request)
+            () -> userValidator.validateRegisterRequest(request)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
     }
@@ -173,7 +173,7 @@ class UserValidatorTest {
 
         DuplicateUserException exception = assertThrows(
             DuplicateUserException.class,
-            () -> userValidator.validateRegistroRequest(request)
+            () -> userValidator.validateRegisterRequest(request)
         );
         assertEquals("El nombre de usuario ya existe", exception.getMessage());
         verify(userRepositoryPort).existsByUsername("existinguser");

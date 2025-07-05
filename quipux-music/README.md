@@ -174,7 +174,7 @@ Content-Type: application/json
 
 {
     "nombre": "Mi Playlist",
-    "descripcion": "Descripción de la playlist",
+    "descripcion": "Descripción de la playlistDomain",
     "canciones": [
         {
             "titulo": "Bohemian Rhapsody",
@@ -331,7 +331,7 @@ const loginResponse = await fetch('http://localhost:8080/auth/login', {
 
 const { token } = await loginResponse.json();
 
-// Crear playlist
+// Crear playlistDomain
 const playlistResponse = await fetch('http://localhost:8080/lists', {
   method: 'POST',
   headers: {

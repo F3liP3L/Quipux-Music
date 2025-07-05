@@ -2,28 +2,28 @@ package com.quipuxmusic.core.domain.domains;
 
 import java.util.Objects;
 
-public class User {
+public final class UserDomain {
     
     private Long id;
     private String username;
     private String password;
     private String role;
 
-    public User() {}
+    public UserDomain() {}
 
-    public User(String username, String password) {
+    public UserDomain(String username, String password) {
         this.username = username;
         this.password = password;
         this.role = "USER";
     }
 
-    public User(String username, String password, String role) {
+    public UserDomain(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
-    public User(Long id, String username, String password, String role) {
+    public UserDomain(Long id, String username, String password, String role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -67,9 +67,9 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
-        User user = (User) o;
+        UserDomain userDomain = (UserDomain) o;
         
-        return Objects.equals(username, user.username);
+        return Objects.equals(username, userDomain.username);
     }
     
     @Override

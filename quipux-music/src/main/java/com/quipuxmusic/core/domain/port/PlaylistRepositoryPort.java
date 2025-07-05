@@ -1,16 +1,17 @@
 package com.quipuxmusic.core.domain.port;
 
-import com.quipuxmusic.core.domain.domains.Playlist;
+import com.quipuxmusic.core.domain.domains.PlaylistDomain;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface PlaylistRepositoryPort {
     
-    Playlist save(Playlist playlist);
+    PlaylistDomain save(PlaylistDomain playlistDomain);
     
-    List<Playlist> findAll();
+    List<PlaylistDomain> findAll();
     
-    Optional<Playlist> findByName(String name);
+    Optional<PlaylistDomain> findByName(String name);
     
     boolean existsByName(String name);
     

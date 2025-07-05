@@ -3,7 +3,7 @@ package com.quipuxmusic.core.application.facade;
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
 import com.quipuxmusic.core.application.dto.RegisterRequestDTO;
 import com.quipuxmusic.core.application.mapper.UserMapper;
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.domain.usecase.CreateUserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public final class CreateUserFacade implements CreateUserFacadePort {
     }
     @Override
     public MessageResponseDTO execute(RegisterRequestDTO registerRequestDTO) {
-        User user = userMapper.toDomain(registerRequestDTO);
-        return createUserUseCase.execute(user);
+        UserDomain userDomain = userMapper.toDomain(registerRequestDTO);
+        return createUserUseCase.execute(userDomain);
     }
 } 

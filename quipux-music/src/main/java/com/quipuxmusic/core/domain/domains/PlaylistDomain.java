@@ -4,34 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Playlist {
+public final class PlaylistDomain {
     
     private Long id;
     private String name;
     private String description;
-    private List<Song> songs;
+    private List<SongDomain> songDomains;
     
-    public Playlist() {
-        this.songs = new ArrayList<>();
+    public PlaylistDomain() {
+        this.songDomains = new ArrayList<>();
     }
     
-    public Playlist(String name, String description) {
+    public PlaylistDomain(String name, String description) {
         this.name = name;
         this.description = description;
-        this.songs = new ArrayList<>();
+        this.songDomains = new ArrayList<>();
     }
     
-    public Playlist(String name, String description, List<Song> songs) {
+    public PlaylistDomain(String name, String description, List<SongDomain> songDomains) {
         this.name = name;
         this.description = description;
-        this.songs = songs != null ? songs : new ArrayList<>();
+        this.songDomains = songDomains != null ? songDomains : new ArrayList<>();
     }
     
-    public Playlist(Long id, String name, String description, List<Song> songs) {
+    public PlaylistDomain(Long id, String name, String description, List<SongDomain> songDomains) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.songs = songs != null ? songs : new ArrayList<>();
+        this.songDomains = songDomains != null ? songDomains : new ArrayList<>();
     }
     
     // Getters and Setters
@@ -59,23 +59,23 @@ public class Playlist {
         this.description = description;
     }
     
-    public List<Song> getSongs() {
-        return songs;
+    public List<SongDomain> getSongs() {
+        return songDomains;
     }
     
-    public void setSongs(List<Song> songs) {
-        this.songs = songs != null ? songs : new ArrayList<>();
+    public void setSongs(List<SongDomain> songDomains) {
+        this.songDomains = songDomains != null ? songDomains : new ArrayList<>();
     }
     
     // Helper methods
-    public void addSong(Song song) {
-        if (song != null && !songs.contains(song)) {
-            songs.add(song);
+    public void addSong(SongDomain songDomain) {
+        if (songDomain != null && !songDomains.contains(songDomain)) {
+            songDomains.add(songDomain);
         }
     }
     
-    public void removeSong(Song song) {
-        songs.remove(song);
+    public void removeSong(SongDomain songDomain) {
+        songDomains.remove(songDomain);
     }
     
     @Override
@@ -83,9 +83,9 @@ public class Playlist {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
-        Playlist playlist = (Playlist) o;
+        PlaylistDomain playlistDomain = (PlaylistDomain) o;
         
-        return Objects.equals(name, playlist.name);
+        return Objects.equals(name, playlistDomain.name);
     }
     
     @Override
@@ -99,7 +99,7 @@ public class Playlist {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", songsCount=" + (songs != null ? songs.size() : 0) +
+                ", songsCount=" + (songDomains != null ? songDomains.size() : 0) +
                 '}';
     }
 } 

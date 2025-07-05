@@ -2,8 +2,8 @@ package com.quipuxmusic.core.application.usecase;
 
 import com.quipuxmusic.core.application.dto.PlaylistDTO;
 import com.quipuxmusic.core.application.mapper.PlaylistMapper;
-import com.quipuxmusic.core.domain.domains.Playlist;
-import com.quipuxmusic.core.domain.domains.Song;
+import com.quipuxmusic.core.domain.domains.PlaylistDomain;
+import com.quipuxmusic.core.domain.domains.SongDomain;
 import com.quipuxmusic.core.domain.port.PlaylistRepositoryPort;
 import com.quipuxmusic.core.domain.port.SongRepositoryPort;
 import com.quipuxmusic.core.domain.usecase.CreatePlaylistUseCase;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Service
 public class CreatePlaylistUseCaseImpl implements CreatePlaylistUseCase {
-    
     private final PlaylistRepositoryPort playlistRepositoryPort;
     private final SongRepositoryPort songRepositoryPort;
     private final PlaylistMapper playlistMapper;
@@ -33,16 +32,16 @@ public class CreatePlaylistUseCaseImpl implements CreatePlaylistUseCase {
     }
     
     @Override
-    public PlaylistDTO execute(Playlist playlist) {
-        var response = playlistMapper.toDTO(playlist);
+    public PlaylistDTO execute(PlaylistDomain playlistDomain) {
+        var response = playlistMapper.toDTO(playlistDomain);
         playlistValidator.validateCreatePlaylist(response);
 
-        if (playlist.getSongs() != null) {
-            for (Song song : playlist.getSongs()) {
-                song = songRepositoryPort.save(song);
+        if (playlistDomain.getSongs() != null) {
+            for (SongDomain songDomain : playlistDomain.getSongs()) {
+                songRepositoryPort.save(songDomain);
             }
         }
-        playlistRepositoryPort.save(playlist);
+        playlistRepositoryPort.save(playlistDomain);
         return response;
     }
 } 

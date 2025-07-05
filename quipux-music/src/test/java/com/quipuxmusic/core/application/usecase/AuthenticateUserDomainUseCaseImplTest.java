@@ -2,7 +2,7 @@ package com.quipuxmusic.core.application.usecase;
 
 import com.quipuxmusic.core.application.dto.LoginResponseDTO;
 import com.quipuxmusic.core.application.mapper.UserMapper;
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.domain.exception.AuthenticationException;
 import com.quipuxmusic.core.domain.port.JwtServicePort;
 import com.quipuxmusic.core.domain.port.PasswordEncoderPort;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - AuthenticateUserUseCaseImpl")
-class AuthenticateUserUseCaseImplTest {
+class AuthenticateUserDomainUseCaseImplTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
@@ -51,50 +51,55 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería autenticar usuario exitosamente")
     void shouldAuthenticateUserSuccessfully() {
-        User loginUser = new User();
-        loginUser.setUsername("testuser");
-        loginUser.setPassword("password123");
+        UserDomain loginUserDomain = new UserDomain();
+        loginUserDomain.setUsername("testuser");
+        loginUserDomain.setPassword("password123");
 
-        User storedUser = new User();
-        storedUser.setId(1L);
-        storedUser.setUsername("testuser");
-        storedUser.setPassword("encodedPassword123");
-        storedUser.setRole("USER");
+        UserDomain storedUserDomain = new UserDomain();
+        storedUserDomain.setId(1L);
+        storedUserDomain.setUsername("testuser");
+        storedUserDomain.setPassword("encodedPassword123");
+        storedUserDomain.setRole("USER");
 
         LoginResponseDTO expectedResponse = new LoginResponseDTO();
         expectedResponse.setToken("jwtToken123");
         expectedResponse.setMensaje("Login exitoso");
 
-        when(userRepositoryPort.findByUsername("testuser")).thenReturn(Optional.of(storedUser));
+        when(userRepositoryPort.findByUsername("testuser")).thenReturn(Optional.of(storedUserDomain));
         when(passwordEncoderPort.matches("password123", "encodedPassword123")).thenReturn(true);
-        when(jwtServicePort.generateToken(storedUser)).thenReturn("jwtToken123");
-        when(userMapper.toLoginResponseDTO(storedUser, "jwtToken123")).thenReturn(expectedResponse);
+        when(jwtServicePort.generateToken(storedUserDomain)).thenReturn("jwtToken123");
+        when(userMapper.toLoginResponseDTO(storedUserDomain, "jwtToken123")).thenReturn(expectedResponse);
 
-        LoginResponseDTO result = authenticateUserUseCase.execute(loginUser);
+        LoginResponseDTO result = authenticateUserUseCase.execute(loginUserDomain);
 
         assertNotNull(result);
         assertEquals("jwtToken123", result.getToken());
         assertEquals("Login exitoso", result.getMensaje());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort).findByUsername("testuser");
         verify(passwordEncoderPort).matches("password123", "encodedPassword123");
-        verify(jwtServicePort).generateToken(storedUser);
-        verify(userMapper).toLoginResponseDTO(storedUser, "jwtToken123");
+        verify(jwtServicePort).generateToken(storedUserDomain);
+        verify(userMapper).toLoginResponseDTO(storedUserDomain, "jwtToken123");
     }
 
     @Test
     @DisplayName("Debería lanzar excepción cuando username es null")
     void shouldThrowExceptionWhenUsernameIsNull() {
-        User user = new User();
-        user.setUsername(null);
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername(null);
+        userDomain.setPassword("password123");
+
+        doThrow(new IllegalArgumentException("El nombre de usuario es requerido"))
+            .when(userValidator).validateLoginRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort, never()).findByUsername(any());
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -104,16 +109,20 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username está vacío")
     void shouldThrowExceptionWhenUsernameIsEmpty() {
-        User user = new User();
-        user.setUsername("");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("");
+        userDomain.setPassword("password123");
+
+        doThrow(new IllegalArgumentException("El nombre de usuario es requerido"))
+            .when(userValidator).validateLoginRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort, never()).findByUsername(any());
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -123,16 +132,20 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username tiene solo espacios")
     void shouldThrowExceptionWhenUsernameHasOnlySpaces() {
-        User user = new User();
-        user.setUsername("   ");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("   ");
+        userDomain.setPassword("password123");
+
+        doThrow(new IllegalArgumentException("El nombre de usuario es requerido"))
+            .when(userValidator).validateLoginRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort, never()).findByUsername(any());
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -142,16 +155,20 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password es null")
     void shouldThrowExceptionWhenPasswordIsNull() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword(null);
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword(null);
+
+        doThrow(new IllegalArgumentException("La contraseña es requerida"))
+            .when(userValidator).validateLoginRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort, never()).findByUsername(any());
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -161,16 +178,20 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password está vacío")
     void shouldThrowExceptionWhenPasswordIsEmpty() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("");
+
+        doThrow(new IllegalArgumentException("La contraseña es requerida"))
+            .when(userValidator).validateLoginRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort, never()).findByUsername(any());
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -180,16 +201,20 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password tiene solo espacios")
     void shouldThrowExceptionWhenPasswordHasOnlySpaces() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("   ");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("   ");
+
+        doThrow(new IllegalArgumentException("La contraseña es requerida"))
+            .when(userValidator).validateLoginRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort, never()).findByUsername(any());
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -199,18 +224,19 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar AuthenticationException cuando usuario no existe")
     void shouldThrowAuthenticationExceptionWhenUserDoesNotExist() {
-        User user = new User();
-        user.setUsername("nonexistentuser");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("nonexistentuser");
+        userDomain.setPassword("password123");
 
         when(userRepositoryPort.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
 
         AuthenticationException exception = assertThrows(
             AuthenticationException.class,
-            () -> authenticateUserUseCase.execute(user)
+            () -> authenticateUserUseCase.execute(userDomain)
         );
         assertEquals("Usuario o contraseña inválidos", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort).findByUsername("nonexistentuser");
         verify(passwordEncoderPort, never()).matches(any(), any());
         verify(jwtServicePort, never()).generateToken(any());
@@ -220,25 +246,26 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar AuthenticationException cuando password no coincide")
     void shouldThrowAuthenticationExceptionWhenPasswordDoesNotMatch() {
-        User loginUser = new User();
-        loginUser.setUsername("testuser");
-        loginUser.setPassword("wrongpassword");
+        UserDomain loginUserDomain = new UserDomain();
+        loginUserDomain.setUsername("testuser");
+        loginUserDomain.setPassword("wrongpassword");
 
-        User storedUser = new User();
-        storedUser.setId(1L);
-        storedUser.setUsername("testuser");
-        storedUser.setPassword("encodedPassword123");
-        storedUser.setRole("USER");
+        UserDomain storedUserDomain = new UserDomain();
+        storedUserDomain.setId(1L);
+        storedUserDomain.setUsername("testuser");
+        storedUserDomain.setPassword("encodedPassword123");
+        storedUserDomain.setRole("USER");
 
-        when(userRepositoryPort.findByUsername("testuser")).thenReturn(Optional.of(storedUser));
+        when(userRepositoryPort.findByUsername("testuser")).thenReturn(Optional.of(storedUserDomain));
         when(passwordEncoderPort.matches("wrongpassword", "encodedPassword123")).thenReturn(false);
 
         AuthenticationException exception = assertThrows(
             AuthenticationException.class,
-            () -> authenticateUserUseCase.execute(loginUser)
+            () -> authenticateUserUseCase.execute(loginUserDomain)
         );
         assertEquals("Usuario o contraseña inválidos", exception.getMessage());
 
+        verify(userValidator).validateLoginRequest(any());
         verify(userRepositoryPort).findByUsername("testuser");
         verify(passwordEncoderPort).matches("wrongpassword", "encodedPassword123");
         verify(jwtServicePort, never()).generateToken(any());
@@ -248,29 +275,29 @@ class AuthenticateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería generar token JWT cuando autenticación es exitosa")
     void shouldGenerateJwtTokenWhenAuthenticationIsSuccessful() {
-        User loginUser = new User();
-        loginUser.setUsername("testuser");
-        loginUser.setPassword("password123");
+        UserDomain loginUserDomain = new UserDomain();
+        loginUserDomain.setUsername("testuser");
+        loginUserDomain.setPassword("password123");
 
-        User storedUser = new User();
-        storedUser.setId(1L);
-        storedUser.setUsername("testuser");
-        storedUser.setPassword("encodedPassword123");
-        storedUser.setRole("USER");
+        UserDomain storedUserDomain = new UserDomain();
+        storedUserDomain.setId(1L);
+        storedUserDomain.setUsername("testuser");
+        storedUserDomain.setPassword("encodedPassword123");
+        storedUserDomain.setRole("USER");
 
         LoginResponseDTO expectedResponse = new LoginResponseDTO();
         expectedResponse.setToken("generatedJwtToken");
         expectedResponse.setMensaje("Login exitoso");
 
-        when(userRepositoryPort.findByUsername("testuser")).thenReturn(Optional.of(storedUser));
+        when(userRepositoryPort.findByUsername("testuser")).thenReturn(Optional.of(storedUserDomain));
         when(passwordEncoderPort.matches("password123", "encodedPassword123")).thenReturn(true);
-        when(jwtServicePort.generateToken(storedUser)).thenReturn("generatedJwtToken");
-        when(userMapper.toLoginResponseDTO(storedUser, "generatedJwtToken")).thenReturn(expectedResponse);
+        when(jwtServicePort.generateToken(storedUserDomain)).thenReturn("generatedJwtToken");
+        when(userMapper.toLoginResponseDTO(storedUserDomain, "generatedJwtToken")).thenReturn(expectedResponse);
 
-        LoginResponseDTO result = authenticateUserUseCase.execute(loginUser);
+        LoginResponseDTO result = authenticateUserUseCase.execute(loginUserDomain);
 
         assertEquals("generatedJwtToken", result.getToken());
-        verify(jwtServicePort).generateToken(storedUser);
-        verify(userMapper).toLoginResponseDTO(storedUser, "generatedJwtToken");
+        verify(jwtServicePort).generateToken(storedUserDomain);
+        verify(userMapper).toLoginResponseDTO(storedUserDomain, "generatedJwtToken");
     }
 } 

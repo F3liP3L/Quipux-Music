@@ -1,7 +1,8 @@
 package com.quipuxmusic.core.application.usecase;
 
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
+import com.quipuxmusic.core.domain.exception.DuplicateUserException;
 import com.quipuxmusic.core.domain.port.PasswordEncoderPort;
 import com.quipuxmusic.core.domain.port.UserRepositoryPort;
 import com.quipuxmusic.core.domain.usecase.CreateUserUseCase;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - CreateUserUseCaseImpl")
-class CreateUserUseCaseImplTest {
+class CreateUserDomainUseCaseImplTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
@@ -39,38 +40,40 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería crear usuario exitosamente")
     void shouldCreateUserSuccessfully() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("password123");
 
-        when(userRepositoryPort.existsByUsername("testuser")).thenReturn(false);
         when(passwordEncoderPort.encode("password123")).thenReturn("encodedPassword123");
-        MessageResponseDTO result = createUserUseCase.execute(user);
+        MessageResponseDTO result = createUserUseCase.execute(userDomain);
 
         assertNotNull(result);
         assertEquals("Usuario registrado exitosamente", result.getMensaje());
         assertEquals("EXITO", result.getTipo());
-        assertEquals("encodedPassword123", user.getPassword());
+        assertEquals("encodedPassword123", userDomain.getPassword());
 
-        verify(userRepositoryPort).existsByUsername("testuser");
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort).encode("password123");
-        verify(userRepositoryPort).save(user);
+        verify(userRepositoryPort).save(userDomain);
     }
 
     @Test
     @DisplayName("Debería lanzar excepción cuando username es null")
     void shouldThrowExceptionWhenUsernameIsNull() {
-        User user = new User();
-        user.setUsername(null);
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername(null);
+        userDomain.setPassword("password123");
+
+        doThrow(new IllegalArgumentException("El nombre de usuario es requerido"))
+            .when(userValidator).validateRegisterRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
 
-        verify(userRepositoryPort, never()).existsByUsername(any());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -78,17 +81,20 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username está vacío")
     void shouldThrowExceptionWhenUsernameIsEmpty() {
-        User user = new User();
-        user.setUsername("");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("");
+        userDomain.setPassword("password123");
+
+        doThrow(new IllegalArgumentException("El nombre de usuario es requerido"))
+            .when(userValidator).validateRegisterRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
 
-        verify(userRepositoryPort, never()).existsByUsername(any());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -96,17 +102,20 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username tiene solo espacios")
     void shouldThrowExceptionWhenUsernameHasOnlySpaces() {
-        User user = new User();
-        user.setUsername("   ");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("   ");
+        userDomain.setPassword("password123");
+
+        doThrow(new IllegalArgumentException("El nombre de usuario es requerido"))
+            .when(userValidator).validateRegisterRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario es requerido", exception.getMessage());
 
-        verify(userRepositoryPort, never()).existsByUsername(any());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -114,17 +123,20 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password es null")
     void shouldThrowExceptionWhenPasswordIsNull() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword(null);
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword(null);
+
+        doThrow(new IllegalArgumentException("La contraseña es requerida"))
+            .when(userValidator).validateRegisterRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
 
-        verify(userRepositoryPort, never()).existsByUsername(any());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -132,18 +144,20 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password está vacío")
     void shouldThrowExceptionWhenPasswordIsEmpty() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("");
 
+        doThrow(new IllegalArgumentException("La contraseña es requerida"))
+            .when(userValidator).validateRegisterRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
 
-        verify(userRepositoryPort, never()).existsByUsername(any());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -151,17 +165,20 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password tiene solo espacios")
     void shouldThrowExceptionWhenPasswordHasOnlySpaces() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("   ");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("   ");
+
+        doThrow(new IllegalArgumentException("La contraseña es requerida"))
+            .when(userValidator).validateRegisterRequest(any());
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("La contraseña es requerida", exception.getMessage());
 
-        verify(userRepositoryPort, never()).existsByUsername(any());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -169,19 +186,20 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username ya existe")
     void shouldThrowExceptionWhenUsernameAlreadyExists() {
-        User user = new User();
-        user.setUsername("existinguser");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("existinguser");
+        userDomain.setPassword("password123");
 
-        when(userRepositoryPort.existsByUsername("existinguser")).thenReturn(true);
+        doThrow(new DuplicateUserException("El nombre de usuario ya existe"))
+            .when(userValidator).validateRegisterRequest(any());
 
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> createUserUseCase.execute(user)
+        DuplicateUserException exception = assertThrows(
+            DuplicateUserException.class,
+            () -> createUserUseCase.execute(userDomain)
         );
         assertEquals("El nombre de usuario ya existe", exception.getMessage());
 
-        verify(userRepositoryPort).existsByUsername("existinguser");
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort, never()).encode(any());
         verify(userRepositoryPort, never()).save(any());
     }
@@ -189,32 +207,32 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería encriptar password antes de guardar")
     void shouldEncodePasswordBeforeSaving() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("plainPassword");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("plainPassword");
 
-        when(userRepositoryPort.existsByUsername("testuser")).thenReturn(false);
         when(passwordEncoderPort.encode("plainPassword")).thenReturn("encodedPassword");
-        createUserUseCase.execute(user);
+        createUserUseCase.execute(userDomain);
 
-        assertEquals("encodedPassword", user.getPassword());
+        assertEquals("encodedPassword", userDomain.getPassword());
+        verify(userValidator).validateRegisterRequest(any());
         verify(passwordEncoderPort).encode("plainPassword");
-        verify(userRepositoryPort).save(user);
+        verify(userRepositoryPort).save(userDomain);
     }
 
     @Test
     @DisplayName("Debería mantener username original después de encriptar password")
     void shouldKeepOriginalUsernameAfterEncodingPassword() {
-        User user = new User();
-        user.setUsername("testuser");
-        user.setPassword("password123");
+        UserDomain userDomain = new UserDomain();
+        userDomain.setUsername("testuser");
+        userDomain.setPassword("password123");
 
-        when(userRepositoryPort.existsByUsername("testuser")).thenReturn(false);
         when(passwordEncoderPort.encode("password123")).thenReturn("encodedPassword123");
 
-        createUserUseCase.execute(user);
+        createUserUseCase.execute(userDomain);
 
-        assertEquals("testuser", user.getUsername());
-        assertEquals("encodedPassword123", user.getPassword());
+        assertEquals("testuser", userDomain.getUsername());
+        assertEquals("encodedPassword123", userDomain.getPassword());
+        verify(userValidator).validateRegisterRequest(any());
     }
 } 

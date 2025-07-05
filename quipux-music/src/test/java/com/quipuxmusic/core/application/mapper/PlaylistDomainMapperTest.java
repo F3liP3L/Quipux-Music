@@ -2,8 +2,8 @@ package com.quipuxmusic.core.application.mapper;
 
 import com.quipuxmusic.core.application.dto.PlaylistDTO;
 import com.quipuxmusic.core.application.dto.SongDTO;
-import com.quipuxmusic.core.domain.domains.Playlist;
-import com.quipuxmusic.core.domain.domains.Song;
+import com.quipuxmusic.core.domain.domains.PlaylistDomain;
+import com.quipuxmusic.core.domain.domains.SongDomain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - PlaylistMapper")
-class PlaylistMapperTest {
+class PlaylistDomainMapperTest {
 
     @Mock
     private SongMapper songMapper;
@@ -35,27 +35,27 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear Playlist a PlaylistDTO exitosamente")
     void shouldMapPlaylistToPlaylistDTOSuccessfully() {
-        Song song1 = new Song();
-        song1.setId(1L);
-        song1.setTitle("Canción 1");
-        song1.setArtist("Artista 1");
-        song1.setAlbum("Álbum 1");
-        song1.setYear(String.valueOf(2020));
+        SongDomain songDomain1 = new SongDomain();
+        songDomain1.setId(1L);
+        songDomain1.setTitle("Canción 1");
+        songDomain1.setArtist("Artista 1");
+        songDomain1.setAlbum("Álbum 1");
+        songDomain1.setYear(String.valueOf(2020));
 
-        Song song2 = new Song();
-        song2.setId(2L);
-        song2.setTitle("Canción 2");
-        song2.setArtist("Artista 2");
-        song2.setAlbum("Álbum 2");
-        song2.setYear(String.valueOf(2021));
+        SongDomain songDomain2 = new SongDomain();
+        songDomain2.setId(2L);
+        songDomain2.setTitle("Canción 2");
+        songDomain2.setArtist("Artista 2");
+        songDomain2.setAlbum("Álbum 2");
+        songDomain2.setYear(String.valueOf(2021));
 
-        List<Song> songs = Arrays.asList(song1, song2);
+        List<SongDomain> songDomains = Arrays.asList(songDomain1, songDomain2);
 
-        Playlist playlist = new Playlist();
-        playlist.setId(1L);
-        playlist.setName("Mi Playlist");
-        playlist.setDescription("Descripción de prueba");
-        playlist.setSongs(songs);
+        PlaylistDomain playlistDomain = new PlaylistDomain();
+        playlistDomain.setId(1L);
+        playlistDomain.setName("Mi Playlist");
+        playlistDomain.setDescription("Descripción de prueba");
+        playlistDomain.setSongs(songDomains);
 
         SongDTO songDTO1 = new SongDTO();
         songDTO1.setTitulo("Canción 1");
@@ -71,10 +71,10 @@ class PlaylistMapperTest {
 
         List<SongDTO> songDTOs = Arrays.asList(songDTO1, songDTO2);
 
-        when(songMapper.toDTO(song1)).thenReturn(songDTO1);
-        when(songMapper.toDTO(song2)).thenReturn(songDTO2);
+        when(songMapper.toDTO(songDomain1)).thenReturn(songDTO1);
+        when(songMapper.toDTO(songDomain2)).thenReturn(songDTO2);
 
-        PlaylistDTO result = playlistMapper.toDTO(playlist);
+        PlaylistDTO result = playlistMapper.toDTO(playlistDomain);
 
         assertNotNull(result);
         assertEquals("Mi Playlist", result.getNombre());
@@ -83,20 +83,20 @@ class PlaylistMapperTest {
         assertEquals("Canción 1", result.getCanciones().get(0).getTitulo());
         assertEquals("Canción 2", result.getCanciones().get(1).getTitulo());
 
-        verify(songMapper).toDTO(song1);
-        verify(songMapper).toDTO(song2);
+        verify(songMapper).toDTO(songDomain1);
+        verify(songMapper).toDTO(songDomain2);
     }
 
     @Test
     @DisplayName("Debería mapear Playlist sin canciones a PlaylistDTO")
     void shouldMapPlaylistWithoutSongsToPlaylistDTO() {
-        Playlist playlist = new Playlist();
-        playlist.setId(1L);
-        playlist.setName("Playlist Vacía");
-        playlist.setDescription("Sin canciones");
-        playlist.setSongs(Collections.emptyList());
+        PlaylistDomain playlistDomain = new PlaylistDomain();
+        playlistDomain.setId(1L);
+        playlistDomain.setName("Playlist Vacía");
+        playlistDomain.setDescription("Sin canciones");
+        playlistDomain.setSongs(Collections.emptyList());
 
-        PlaylistDTO result = playlistMapper.toDTO(playlist);
+        PlaylistDTO result = playlistMapper.toDTO(playlistDomain);
 
         assertNotNull(result);
         assertEquals("Playlist Vacía", result.getNombre());
@@ -128,24 +128,24 @@ class PlaylistMapperTest {
         playlistDTO.setDescripcion("Descripción de prueba");
         playlistDTO.setCanciones(songDTOs);
 
-        Song song1 = new Song();
-        song1.setId(1L);
-        song1.setTitle("Canción 1");
-        song1.setArtist("Artista 1");
-        song1.setAlbum("Álbum 1");
-        song1.setYear("2020");
+        SongDomain songDomain1 = new SongDomain();
+        songDomain1.setId(1L);
+        songDomain1.setTitle("Canción 1");
+        songDomain1.setArtist("Artista 1");
+        songDomain1.setAlbum("Álbum 1");
+        songDomain1.setYear("2020");
 
-        Song song2 = new Song();
-        song2.setId(2L);
-        song2.setTitle("Canción 2");
-        song2.setArtist("Artista 2");
-        song2.setAlbum("Álbum 2");
-        song2.setYear("2021");
+        SongDomain songDomain2 = new SongDomain();
+        songDomain2.setId(2L);
+        songDomain2.setTitle("Canción 2");
+        songDomain2.setArtist("Artista 2");
+        songDomain2.setAlbum("Álbum 2");
+        songDomain2.setYear("2021");
 
-        when(songMapper.toDomain(songDTO1)).thenReturn(song1);
-        when(songMapper.toDomain(songDTO2)).thenReturn(song2);
+        when(songMapper.toDomain(songDTO1)).thenReturn(songDomain1);
+        when(songMapper.toDomain(songDTO2)).thenReturn(songDomain2);
 
-        Playlist result = playlistMapper.toDomain(playlistDTO);
+        PlaylistDomain result = playlistMapper.toDomain(playlistDTO);
 
         assertNotNull(result);
         assertEquals("Mi Playlist", result.getName());
@@ -166,7 +166,7 @@ class PlaylistMapperTest {
         playlistDTO.setDescripcion("Sin canciones");
         playlistDTO.setCanciones(Collections.emptyList());
 
-        Playlist result = playlistMapper.toDomain(playlistDTO);
+        PlaylistDomain result = playlistMapper.toDomain(playlistDTO);
 
         assertNotNull(result);
         assertEquals("Playlist Vacía", result.getName());
@@ -190,13 +190,13 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear Playlist con valores null")
     void shouldMapPlaylistWithNullValues() {
-        Playlist playlist = new Playlist();
-        playlist.setId(null);
-        playlist.setName(null);
-        playlist.setDescription(null);
-        playlist.setSongs(null);
+        PlaylistDomain playlistDomain = new PlaylistDomain();
+        playlistDomain.setId(null);
+        playlistDomain.setName(null);
+        playlistDomain.setDescription(null);
+        playlistDomain.setSongs(null);
 
-        PlaylistDTO result = playlistMapper.toDTO(playlist);
+        PlaylistDTO result = playlistMapper.toDTO(playlistDomain);
 
         assertNotNull(result);
         assertNull(result.getNombre());
@@ -220,13 +220,13 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear Playlist con canciones null")
     void shouldMapPlaylistWithNullSongs() {
-        Playlist playlist = new Playlist();
-        playlist.setId(1L);
-        playlist.setName("Playlist con canciones null");
-        playlist.setDescription("Descripción");
-        playlist.setSongs(null);
+        PlaylistDomain playlistDomain = new PlaylistDomain();
+        playlistDomain.setId(1L);
+        playlistDomain.setName("Playlist con canciones null");
+        playlistDomain.setDescription("Descripción");
+        playlistDomain.setSongs(null);
 
-        PlaylistDTO result = playlistMapper.toDTO(playlist);
+        PlaylistDTO result = playlistMapper.toDTO(playlistDomain);
 
         assertNotNull(result);
         assertEquals("Playlist con canciones null", result.getNombre());

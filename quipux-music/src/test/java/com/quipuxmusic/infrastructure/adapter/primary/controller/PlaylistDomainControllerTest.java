@@ -2,7 +2,6 @@ package com.quipuxmusic.infrastructure.adapter.primary.controller;
 
 import com.quipuxmusic.core.application.dto.PlaylistDTO;
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
-import com.quipuxmusic.core.application.dto.SongDTO;
 import com.quipuxmusic.core.application.facade.*;
 import com.quipuxmusic.core.domain.exception.DuplicatePlaylistException;
 import com.quipuxmusic.core.domain.exception.PlaylistNotFoundException;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Pruebas Unitarias - PlaylistController")
-class PlaylistControllerTest {
+class PlaylistDomainControllerTest {
 
     @Mock
     private CreatePlaylistFacade createPlaylistFacade;

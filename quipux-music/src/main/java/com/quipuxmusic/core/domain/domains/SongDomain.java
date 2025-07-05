@@ -2,7 +2,7 @@ package com.quipuxmusic.core.domain.domains;
 
 import java.util.Objects;
 
-public class Song {
+public final class SongDomain {
     
     private Long id;
     private String title;
@@ -11,9 +11,9 @@ public class Song {
     private String year;
     private String genre;
     
-    public Song() {}
+    public SongDomain() {}
     
-    public Song(String title, String artist, String album, String year, String genre) {
+    public SongDomain(String title, String artist, String album, String year, String genre) {
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -21,7 +21,7 @@ public class Song {
         this.genre = genre;
     }
     
-    public Song(Long id, String title, String artist, String album, String year, String genre) {
+    public SongDomain(Long id, String title, String artist, String album, String year, String genre) {
         this.id = id;
         this.title = title;
         this.artist = artist;
@@ -83,13 +83,13 @@ public class Song {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
-        Song song = (Song) o;
+        SongDomain songDomain = (SongDomain) o;
         
-        if (!Objects.equals(title, song.title)) return false;
-        if (!Objects.equals(artist, song.artist)) return false;
-        if (!Objects.equals(album, song.album)) return false;
-        if (!Objects.equals(year, song.year)) return false;
-        return Objects.equals(genre, song.genre);
+        if (!Objects.equals(title, songDomain.title)) return false;
+        if (!Objects.equals(artist, songDomain.artist)) return false;
+        if (!Objects.equals(album, songDomain.album)) return false;
+        if (!Objects.equals(year, songDomain.year)) return false;
+        return Objects.equals(genre, songDomain.genre);
     }
     
     @Override

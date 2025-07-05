@@ -1,6 +1,6 @@
 package com.quipuxmusic.infrastructure.adapter.secondary.service;
 
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.domain.port.JwtServicePort;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,15 +21,15 @@ public class JwtServiceAdapter implements JwtServicePort {
     private long jwtExpiration;
     
     @Override
-    public String generateToken(User user) {
+    public String generateToken(UserDomain userDomain) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
         
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         
         return Jwts.builder()
-                .subject(user.getUsername())
-                .claim("role", user.getRole())
+                .subject(userDomain.getUsername())
+                .claim("role", userDomain.getRole())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key)

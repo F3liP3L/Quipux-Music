@@ -1,7 +1,7 @@
 package com.quipuxmusic.core.application.mapper;
 
 import com.quipuxmusic.core.application.dto.RegisterRequestDTO;
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.application.dto.LoginRequestDTO;
 import com.quipuxmusic.core.application.dto.LoginResponseDTO;
 import org.springframework.stereotype.Component;
@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
     
-    public LoginResponseDTO toLoginResponseDTO(User user, String token) {
-        return new LoginResponseDTO(token, user.getUsername(), user.getRole());
+    public LoginResponseDTO toLoginResponseDTO(UserDomain userDomain, String token) {
+        return new LoginResponseDTO(token, userDomain.getUsername(), userDomain.getRole());
     }
     
-    public User toDomain(LoginRequestDTO loginRequestDTO) {
-        return new User(loginRequestDTO.getNombreUsuario(), loginRequestDTO.getContrasena());
+    public UserDomain toDomain(LoginRequestDTO loginRequestDTO) {
+        return new UserDomain(loginRequestDTO.getNombreUsuario(), loginRequestDTO.getContrasena());
     }
     
-    public User toDomain(RegisterRequestDTO registerRequestDTO) {
-        return new User(
+    public UserDomain toDomain(RegisterRequestDTO registerRequestDTO) {
+        return new UserDomain(
             registerRequestDTO.getNombreUsuario(),
             registerRequestDTO.getContrasena(),
             registerRequestDTO.getRol()

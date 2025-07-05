@@ -1,10 +1,10 @@
 package com.quipuxmusic.core.domain.port;
 
-import com.quipuxmusic.core.domain.domains.Song;
+import com.quipuxmusic.core.domain.domains.SongDomain;
 
 public interface SongRepositoryPort {
     
-    Song save(Song song);
+    SongDomain save(SongDomain songDomain);
     
     void deleteById(Long id);
     

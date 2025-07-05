@@ -2,7 +2,7 @@ package com.quipuxmusic.core.application.facade;
 
 import com.quipuxmusic.core.application.dto.PlaylistDTO;
 import com.quipuxmusic.core.application.mapper.PlaylistMapper;
-import com.quipuxmusic.core.domain.domains.Playlist;
+import com.quipuxmusic.core.domain.domains.PlaylistDomain;
 import com.quipuxmusic.core.domain.usecase.CreatePlaylistUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public final class CreatePlaylistFacade implements CreatePlaylistFacadePort {
     }
     @Override
     public PlaylistDTO execute(PlaylistDTO playlistDTO) {
-        Playlist playlist = playlistMapper.toDomain(playlistDTO);
-        return createPlaylistUseCase.execute(playlist);
+        PlaylistDomain playlistDomain = playlistMapper.toDomain(playlistDTO);
+        return createPlaylistUseCase.execute(playlistDomain);
     }
 } 

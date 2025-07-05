@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+final class AuthController {
 
     private final AuthFacadePort authenticateUserFacade;
     private final CreateUserFacadePort createUserFacade;
@@ -60,10 +60,10 @@ public class AuthController {
                 "- usuario / password123 (USER)\n" +
                 "- test / test123 (USER)";
             
-            MessageResponseDTO response = new MessageResponseDTO(mensaje, "EXITO");
+            var  response = new MessageResponseDTO(mensaje, "EXITO");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            MessageResponseDTO error = new MessageResponseDTO("Error al crear usuarios: " + e.getMessage(), "ERROR");
+            var error = new MessageResponseDTO("Error al crear usuarios: " + e.getMessage(), "ERROR");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }

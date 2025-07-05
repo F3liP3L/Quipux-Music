@@ -1,7 +1,7 @@
 package com.quipuxmusic.core.application.mapper;
 
 import com.quipuxmusic.core.application.dto.SongDTO;
-import com.quipuxmusic.core.domain.domains.Song;
+import com.quipuxmusic.core.domain.domains.SongDomain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Pruebas Unitarias - SongMapper")
-class SongMapperTest {
+class SongDomainMapperTest {
 
     private SongMapper songMapper;
 
@@ -21,15 +21,15 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song a SongDTO exitosamente")
     void shouldMapSongToSongDTOSuccessfully() {
-        Song song = new Song();
-        song.setId(1L);
-        song.setTitle("Bohemian Rhapsody");
-        song.setArtist("Queen");
-        song.setAlbum("A Night at the Opera");
-        song.setYear("1975");
-        song.setGenre("Rock");
+        SongDomain songDomain = new SongDomain();
+        songDomain.setId(1L);
+        songDomain.setTitle("Bohemian Rhapsody");
+        songDomain.setArtist("Queen");
+        songDomain.setAlbum("A Night at the Opera");
+        songDomain.setYear("1975");
+        songDomain.setGenre("Rock");
 
-        SongDTO result = songMapper.toDTO(song);
+        SongDTO result = songMapper.toDTO(songDomain);
 
         assertNotNull(result);
         assertEquals("Bohemian Rhapsody", result.getTitulo());
@@ -49,7 +49,7 @@ class SongMapperTest {
         songDTO.setAnno("1971");
         songDTO.setGenero("Pop");
 
-        Song result = songMapper.toDomain(songDTO);
+        SongDomain result = songMapper.toDomain(songDTO);
 
         assertNotNull(result);
         assertEquals("Imagine", result.getTitle());
@@ -62,15 +62,15 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con valores null")
     void shouldMapSongWithNullValues() {
-        Song song = new Song();
-        song.setId(null);
-        song.setTitle(null);
-        song.setArtist(null);
-        song.setAlbum(null);
-        song.setYear(null);
-        song.setGenre(null);
+        SongDomain songDomain = new SongDomain();
+        songDomain.setId(null);
+        songDomain.setTitle(null);
+        songDomain.setArtist(null);
+        songDomain.setAlbum(null);
+        songDomain.setYear(null);
+        songDomain.setGenre(null);
 
-        SongDTO result = songMapper.toDTO(song);
+        SongDTO result = songMapper.toDTO(songDomain);
 
         assertNotNull(result);
         assertNull(result.getTitulo());
@@ -90,7 +90,7 @@ class SongMapperTest {
         songDTO.setAnno(null);
         songDTO.setGenero(null);
 
-        Song result = songMapper.toDomain(songDTO);
+        SongDomain result = songMapper.toDomain(songDTO);
 
         assertNotNull(result);
         assertNull(result.getTitle());
@@ -103,15 +103,15 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con valores vacíos")
     void shouldMapSongWithEmptyValues() {
-        Song song = new Song();
-        song.setId(1L);
-        song.setTitle("");
-        song.setArtist("");
-        song.setAlbum("");
-        song.setYear("0");
-        song.setGenre("");
+        SongDomain songDomain = new SongDomain();
+        songDomain.setId(1L);
+        songDomain.setTitle("");
+        songDomain.setArtist("");
+        songDomain.setAlbum("");
+        songDomain.setYear("0");
+        songDomain.setGenre("");
 
-        SongDTO result = songMapper.toDTO(song);
+        SongDTO result = songMapper.toDTO(songDomain);
 
         assertNotNull(result);
         assertEquals("", result.getTitulo());
@@ -131,7 +131,7 @@ class SongMapperTest {
         songDTO.setAnno("0");
         songDTO.setGenero("");
 
-        Song result = songMapper.toDomain(songDTO);
+        SongDomain result = songMapper.toDomain(songDTO);
 
         assertNotNull(result);
         assertEquals("", result.getTitle());
@@ -144,15 +144,15 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con año negativo")
     void shouldMapSongWithNegativeYear() {
-        Song song = new Song();
-        song.setId(1L);
-        song.setTitle("Canción Antigua");
-        song.setArtist("Artista Antiguo");
-        song.setAlbum("Álbum Antiguo");
-        song.setYear("-100");
-        song.setGenre("Clásica");
+        SongDomain songDomain = new SongDomain();
+        songDomain.setId(1L);
+        songDomain.setTitle("Canción Antigua");
+        songDomain.setArtist("Artista Antiguo");
+        songDomain.setAlbum("Álbum Antiguo");
+        songDomain.setYear("-100");
+        songDomain.setGenre("Clásica");
 
-        SongDTO result = songMapper.toDTO(song);
+        SongDTO result = songMapper.toDTO(songDomain);
 
         assertNotNull(result);
         assertEquals("Canción Antigua", result.getTitulo());
@@ -172,7 +172,7 @@ class SongMapperTest {
         songDTO.setAnno("-100");
         songDTO.setGenero("Clásica");
 
-        Song result = songMapper.toDomain(songDTO);
+        SongDomain result = songMapper.toDomain(songDTO);
 
         assertNotNull(result);
         assertEquals("Canción Antigua", result.getTitle());
@@ -185,15 +185,15 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con caracteres especiales")
     void shouldMapSongWithSpecialCharacters() {
-        Song song = new Song();
-        song.setId(1L);
-        song.setTitle("Canción con ñ y áéíóú");
-        song.setArtist("Artista con símbolos @#$%");
-        song.setAlbum("Álbum con números 123");
-        song.setYear("2023");
-        song.setGenre("Género con emoji 🎵");
+        SongDomain songDomain = new SongDomain();
+        songDomain.setId(1L);
+        songDomain.setTitle("Canción con ñ y áéíóú");
+        songDomain.setArtist("Artista con símbolos @#$%");
+        songDomain.setAlbum("Álbum con números 123");
+        songDomain.setYear("2023");
+        songDomain.setGenre("Género con emoji 🎵");
 
-        SongDTO result = songMapper.toDTO(song);
+        SongDTO result = songMapper.toDTO(songDomain);
 
         assertNotNull(result);
         assertEquals("Canción con ñ y áéíóú", result.getTitulo());
@@ -213,7 +213,7 @@ class SongMapperTest {
         songDTO.setAnno("2023");
         songDTO.setGenero("Género con emoji 🎵");
 
-        Song result = songMapper.toDomain(songDTO);
+        SongDomain result = songMapper.toDomain(songDTO);
 
         assertNotNull(result);
         assertEquals("Canción con ñ y áéíóú", result.getTitle());

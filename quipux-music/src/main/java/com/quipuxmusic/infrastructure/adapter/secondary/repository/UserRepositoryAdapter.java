@@ -1,6 +1,6 @@
 package com.quipuxmusic.infrastructure.adapter.secondary.repository;
 
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.domain.entities.UserEntity;
 import com.quipuxmusic.core.domain.port.UserRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
     
     @Override
-    public User save(User user) {
-        UserEntity userEntity = toEntity(user);
+    public UserDomain save(UserDomain userDomain) {
+        UserEntity userEntity = toEntity(userDomain);
         userEntity = userRepository.save(userEntity);
         return toDomain(userEntity);
     }
     
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<UserDomain> findByUsername(String username) {
         Optional<UserEntity> userEntityOpt = userRepository.findByUsername(username);
         return userEntityOpt.map(this::toDomain);
     }
@@ -41,25 +41,25 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         userRepository.deleteById(id);
     }
 
-    private UserEntity toEntity(User user) {
-        if (user == null) {
+    private UserEntity toEntity(UserDomain userDomain) {
+        if (userDomain == null) {
             return null;
         }
         UserEntity userEntity = new UserEntity();
-        userEntity.setId(user.getId());
-        userEntity.setUsername(user.getUsername());
-        userEntity.setPassword(user.getPassword());
-        userEntity.setRole(user.getRole());
+        userEntity.setId(userDomain.getId());
+        userEntity.setUsername(userDomain.getUsername());
+        userEntity.setPassword(userDomain.getPassword());
+        userEntity.setRole(userDomain.getRole());
         
         return userEntity;
     }
     
-    private User toDomain(UserEntity userEntity) {
+    private UserDomain toDomain(UserEntity userEntity) {
         if (userEntity == null) {
             return null;
         }
         
-        return new User(
+        return new UserDomain(
             userEntity.getId(),
             userEntity.getUsername(),
             userEntity.getPassword(),

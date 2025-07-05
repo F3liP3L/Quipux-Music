@@ -1,14 +1,14 @@
 package com.quipuxmusic.core.domain.port;
 
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 
 import java.util.Optional;
 
 public interface UserRepositoryPort {
     
-    User save(User user);
+    UserDomain save(UserDomain userDomain);
     
-    Optional<User> findByUsername(String username);
+    Optional<UserDomain> findByUsername(String username);
     
     boolean existsByUsername(String username);
     

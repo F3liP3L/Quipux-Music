@@ -1,6 +1,6 @@
 package com.quipuxmusic.infrastructure.adapter.secondary.repository;
 
-import com.quipuxmusic.core.domain.domains.Song;
+import com.quipuxmusic.core.domain.domains.SongDomain;
 import com.quipuxmusic.core.domain.entities.SongEntity;
 import com.quipuxmusic.core.domain.port.SongRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ public class SongRepositoryAdapter implements SongRepositoryPort {
     }
     
     @Override
-    public Song save(Song song) {
-        SongEntity songEntity = toEntity(song);
+    public SongDomain save(SongDomain songDomain) {
+        SongEntity songEntity = toEntity(songDomain);
         songEntity = songRepository.save(songEntity);
         return toDomain(songEntity);
     }
@@ -34,28 +34,28 @@ public class SongRepositoryAdapter implements SongRepositoryPort {
     }
     
     // Métodos privados para conversión directa
-    private SongEntity toEntity(Song song) {
-        if (song == null) {
+    private SongEntity toEntity(SongDomain songDomain) {
+        if (songDomain == null) {
             return null;
         }
         
         SongEntity songEntity = new SongEntity();
-        songEntity.setId(song.getId());
-        songEntity.setTitle(song.getTitle());
-        songEntity.setArtist(song.getArtist());
-        songEntity.setAlbum(song.getAlbum());
-        songEntity.setYear(song.getYear());
-        songEntity.setGenre(song.getGenre());
+        songEntity.setId(songDomain.getId());
+        songEntity.setTitle(songDomain.getTitle());
+        songEntity.setArtist(songDomain.getArtist());
+        songEntity.setAlbum(songDomain.getAlbum());
+        songEntity.setYear(songDomain.getYear());
+        songEntity.setGenre(songDomain.getGenre());
         
         return songEntity;
     }
     
-    private Song toDomain(SongEntity songEntity) {
+    private SongDomain toDomain(SongEntity songEntity) {
         if (songEntity == null) {
             return null;
         }
         
-        return new Song(
+        return new SongDomain(
             songEntity.getId(),
             songEntity.getTitle(),
             songEntity.getArtist(),

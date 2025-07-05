@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/lists")
-public class PlaylistController {
+final class PlaylistController {
 
     private final CreatePlaylistFacadePort createPlaylistFacade;
     private final GetAllPlaylistFacadePort getAllPlaylistsFacade;

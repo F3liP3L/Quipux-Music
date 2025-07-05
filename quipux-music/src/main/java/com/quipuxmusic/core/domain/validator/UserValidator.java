@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserValidator {
+public final class UserValidator {
     
     private final UserRepositoryPort userRepositoryPort;
     
@@ -26,7 +26,7 @@ public class UserValidator {
         }
     }
     
-    public void validateRegistroRequest(RegisterRequestDTO request) {
+    public void validateRegisterRequest(RegisterRequestDTO request) {
         if (request.getNombreUsuario() == null || request.getNombreUsuario().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de usuario es requerido");
         }

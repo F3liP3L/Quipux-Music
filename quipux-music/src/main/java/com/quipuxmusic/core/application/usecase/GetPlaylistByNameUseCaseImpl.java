@@ -2,7 +2,7 @@ package com.quipuxmusic.core.application.usecase;
 
 import com.quipuxmusic.core.application.dto.PlaylistDTO;
 import com.quipuxmusic.core.application.mapper.PlaylistMapper;
-import com.quipuxmusic.core.domain.domains.Playlist;
+import com.quipuxmusic.core.domain.domains.PlaylistDomain;
 import com.quipuxmusic.core.domain.port.PlaylistRepositoryPort;
 import com.quipuxmusic.core.domain.usecase.GetPlaylistByNameUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class GetPlaylistByNameUseCaseImpl implements GetPlaylistByNameUseCase {
     
     @Override
     public PlaylistDTO execute(String name) {
-        Optional<Playlist> playlist = playlistRepositoryPort.findByName(name);
+        Optional<PlaylistDomain> playlist = playlistRepositoryPort.findByName(name);
         if (playlist.isPresent()) {
             return playlistMapper.toDTO(playlist.get());
         } else {

@@ -1,7 +1,8 @@
 package com.quipuxmusic.core.application.usecase;
 
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
-import com.quipuxmusic.core.domain.domains.User;
+import com.quipuxmusic.core.application.dto.RegisterRequestDTO;
+import com.quipuxmusic.core.domain.domains.UserDomain;
 import com.quipuxmusic.core.domain.port.PasswordEncoderPort;
 import com.quipuxmusic.core.domain.port.UserRepositoryPort;
 import com.quipuxmusic.core.domain.usecase.CreateUserUseCase;
@@ -23,23 +24,16 @@ public class CreateUseUseCaseImpl implements CreateUserUseCase {
     }
 
     @Override
-    public MessageResponseDTO execute(User user) {
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre de usuario es requerido");
-        }
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña es requerida");
-        }
+    public MessageResponseDTO execute(UserDomain userDomain) {
+        var registerRequest = new RegisterRequestDTO();
+        registerRequest.setNombreUsuario(userDomain.getUsername());
+        registerRequest.setContrasena(userDomain.getPassword());
+        userValidator.validateRegisterRequest(registerRequest);
 
-        if (userRepositoryPort.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("El nombre de usuario ya existe");
-        }
+        var encodedPassword = passwordEncoderPort.encode(userDomain.getPassword());
+        userDomain.setPassword(encodedPassword);
 
-        String encodedPassword = passwordEncoderPort.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-
-        userRepositoryPort.save(user);
-
+        userRepositoryPort.save(userDomain);
         return new MessageResponseDTO("Usuario registrado exitosamente", "EXITO");
     }
 }

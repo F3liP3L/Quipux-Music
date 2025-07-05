@@ -1,6 +1,7 @@
 package com.quipuxmusic.infrastructure.adapter.secondary.repository;
 
-import com.quipuxmusic.core.domain.domains.Playlist;
+import com.quipuxmusic.core.domain.domains.PlaylistDomain;
+import com.quipuxmusic.core.domain.domains.SongDomain;
 import com.quipuxmusic.core.domain.entities.PlaylistEntity;
 import com.quipuxmusic.core.domain.port.PlaylistRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +21,21 @@ public class PlaylistRepositoryAdapter implements PlaylistRepositoryPort {
     }
     
     @Override
-    public Playlist save(Playlist playlist) {
-        PlaylistEntity playlistEntity = toEntity(playlist);
+    public PlaylistDomain save(PlaylistDomain playlistDomain) {
+        PlaylistEntity playlistEntity = toEntity(playlistDomain);
         playlistEntity = playlistRepository.save(playlistEntity);
         return toDomain(playlistEntity);
     }
     
     @Override
-    public List<Playlist> findAll() {
+    public List<PlaylistDomain> findAll() {
         return playlistRepository.findAll().stream()
                 .map(this::toDomain)
                 .collect(java.util.stream.Collectors.toList());
     }
     
     @Override
-    public Optional<Playlist> findByName(String name) {
+    public Optional<PlaylistDomain> findByName(String name) {
         Optional<PlaylistEntity> playlistEntityOpt = playlistRepository.findByName(name);
         return playlistEntityOpt.map(this::toDomain);
     }
@@ -50,18 +51,18 @@ public class PlaylistRepositoryAdapter implements PlaylistRepositoryPort {
     }
     
     // Métodos privados para conversión directa
-    private PlaylistEntity toEntity(Playlist playlist) {
-        if (playlist == null) {
+    private PlaylistEntity toEntity(PlaylistDomain playlistDomain) {
+        if (playlistDomain == null) {
             return null;
         }
         
         PlaylistEntity playlistEntity = new PlaylistEntity();
-        playlistEntity.setId(playlist.getId());
-        playlistEntity.setName(playlist.getName());
-        playlistEntity.setDescription(playlist.getDescription());
+        playlistEntity.setId(playlistDomain.getId());
+        playlistEntity.setName(playlistDomain.getName());
+        playlistEntity.setDescription(playlistDomain.getDescription());
         
-        if (playlist.getSongs() != null) {
-            List<com.quipuxmusic.core.domain.entities.SongEntity> songEntities = playlist.getSongs().stream()
+        if (playlistDomain.getSongs() != null) {
+            List<com.quipuxmusic.core.domain.entities.SongEntity> songEntities = playlistDomain.getSongs().stream()
                     .map(this::toSongEntity)
                     .collect(java.util.stream.Collectors.toList());
             playlistEntity.setSongs(songEntities);
@@ -70,48 +71,48 @@ public class PlaylistRepositoryAdapter implements PlaylistRepositoryPort {
         return playlistEntity;
     }
     
-    private Playlist toDomain(PlaylistEntity playlistEntity) {
+    private PlaylistDomain toDomain(PlaylistEntity playlistEntity) {
         if (playlistEntity == null) {
             return null;
         }
         
-        List<com.quipuxmusic.core.domain.domains.Song> songs = null;
+        List<SongDomain> songDomains = null;
         if (playlistEntity.getSongs() != null) {
-            songs = playlistEntity.getSongs().stream()
+            songDomains = playlistEntity.getSongs().stream()
                     .map(this::toSongDomain)
                     .collect(java.util.stream.Collectors.toList());
         }
         
-        return new Playlist(
+        return new PlaylistDomain(
             playlistEntity.getId(),
             playlistEntity.getName(),
             playlistEntity.getDescription(),
-            songs
+                songDomains
         );
     }
     
-    private com.quipuxmusic.core.domain.entities.SongEntity toSongEntity(com.quipuxmusic.core.domain.domains.Song song) {
-        if (song == null) {
+    private com.quipuxmusic.core.domain.entities.SongEntity toSongEntity(SongDomain songDomain) {
+        if (songDomain == null) {
             return null;
         }
         
         com.quipuxmusic.core.domain.entities.SongEntity songEntity = new com.quipuxmusic.core.domain.entities.SongEntity();
-        songEntity.setId(song.getId());
-        songEntity.setTitle(song.getTitle());
-        songEntity.setArtist(song.getArtist());
-        songEntity.setAlbum(song.getAlbum());
-        songEntity.setYear(song.getYear());
-        songEntity.setGenre(song.getGenre());
+        songEntity.setId(songDomain.getId());
+        songEntity.setTitle(songDomain.getTitle());
+        songEntity.setArtist(songDomain.getArtist());
+        songEntity.setAlbum(songDomain.getAlbum());
+        songEntity.setYear(songDomain.getYear());
+        songEntity.setGenre(songDomain.getGenre());
         
         return songEntity;
     }
     
-    private com.quipuxmusic.core.domain.domains.Song toSongDomain(com.quipuxmusic.core.domain.entities.SongEntity songEntity) {
+    private SongDomain toSongDomain(com.quipuxmusic.core.domain.entities.SongEntity songEntity) {
         if (songEntity == null) {
             return null;
         }
         
-        return new com.quipuxmusic.core.domain.domains.Song(
+        return new SongDomain(
             songEntity.getId(),
             songEntity.getTitle(),
             songEntity.getArtist(),
