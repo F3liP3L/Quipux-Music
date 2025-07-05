@@ -33,7 +33,7 @@ Quipux Music Frontend es una aplicación web desarrollada en Angular 20 y Angula
 
 1. Clona el repositorio:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/F3liP3L/Quipux-Music.git
    cd quipux-frontend
    ```
 2. Instala las dependencias:
@@ -51,8 +51,8 @@ Quipux Music Frontend es una aplicación web desarrollada en Angular 20 y Angula
 
 ```
 src/
-├── app/                    # Configuración principal
-├── components/            # Componentes de la aplicación
+├── app/                  # Configuración principal
+├── components/           # Componentes de la aplicación
 │   ├── home/             # Página principal con listas
 │   └── login/            # Formulario de autenticación
 ├── dialogs/              # Modales para detalles y creación de listas
@@ -107,7 +107,6 @@ src/
 ```bash
 ng serve         # Servidor de desarrollo
 ng build         # Construir para producción
-ng test          # Ejecutar tests unitarios
 ng lint          # Linting del código
 ```
 
