@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import { ListService } from '../../service/listService';
@@ -49,7 +49,8 @@ export class Home implements OnInit {
     private _listService: ListService,
     private _authService: AuthService,
     private _dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -64,11 +65,13 @@ export class Home implements OnInit {
       next: (data: PlaylistSummary[]) => {
         this.lists = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error fetching lists:', error);
         this._snackBar.open('Error al cargar las listas', 'Cerrar', { duration: 3000 });
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -77,28 +80,32 @@ export class Home implements OnInit {
     this.searchControl.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged(),
+      tap(() => { this.isLoading = true; this.cdr.detectChanges(); }),
       switchMap(searchTerm => {
         if (searchTerm && searchTerm.trim()) {
-          return this._listService.getByName(searchTerm.trim());
+          return this._listService.getByName(searchTerm.trim()).pipe(
+            catchError(() => {
+              this._snackBar.open('Lista no encontrada', 'Cerrar', { duration: 3000 });
+              return [null];
+            })
+          );
         } else {
-          return of(null);
+          return this._listService.getAll();
         }
       })
-    ).subscribe({
-      next: (playlist) => {
-        if (playlist) {
-          this.lists = [{
-            nombre: playlist.nombre,
-            descripcion: playlist.descripcion
-          }];
-        } else if (!this.searchControl.value) {
-          this.loadLists();
-        }
-      },
-      error: (error) => {
-        this._snackBar.open('Lista no encontrada', 'Cerrar', { duration: 3000 });
+    ).subscribe((result) => {
+      if (Array.isArray(result)) {
+        this.lists = result;
+      } else if (result) {
+        this.lists = [{
+          nombre: result.nombre,
+          descripcion: result.descripcion
+        }];
+      } else {
         this.lists = [];
       }
+      this.isLoading = false;
+      this.cdr.detectChanges();
     });
   }
 
@@ -118,6 +125,7 @@ export class Home implements OnInit {
 
   protected onDeletePlaylist(playlist: PlaylistSummary): void {
     if (confirm(`¿Estás seguro de que quieres eliminar la lista "${playlist.nombre}"?`)) {
+      this.isLoading = true;
       this._listService.delete(playlist.nombre).subscribe({
         next: () => {
           this._snackBar.open('Lista eliminada exitosamente', 'Cerrar', { duration: 3000 });
@@ -125,15 +133,18 @@ export class Home implements OnInit {
         },
         error: (error) => {
           this._snackBar.open('Error al eliminar la lista', 'Cerrar', { duration: 3000 });
+          this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
     }
   }
 
   protected onCreatePlaylist(): void {
-    this._dialog.open(CreatePlaylistDialog, {
+    const dialogRef = this._dialog.open(CreatePlaylistDialog, {
       width: '800px'
-    }).afterClosed().subscribe(result => {
+    });
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadLists();
       }
