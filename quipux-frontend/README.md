@@ -96,7 +96,6 @@ src/
 ## Endpoints consumidos
 
 - `POST /auth/login` - Iniciar sesión
-- `POST /auth/register` - Registrar usuario
 - `GET /lists` - Obtener todas las listas
 - `GET /lists/{nombre}` - Obtener lista específica
 - `POST /lists` - Crear nueva lista
