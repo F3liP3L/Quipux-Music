@@ -1,76 +1,53 @@
 # Quipux Music Frontend
 
-Aplicación Angular para gestionar listas de reproducción musical, construida con Angular 20 y Angular Material.
+Quipux Music Frontend es una aplicación web desarrollada en Angular 20 y Angular Material para la gestión de listas de reproducción musicales. Permite a los usuarios autenticarse, crear, buscar, visualizar y eliminar listas de reproducción, así como ver los detalles de las canciones de cada lista.
 
-## 🚀 Características
+## Características principales
 
-- **Autenticación JWT**: Sistema de login seguro con tokens
-- **Gestión de Listas**: Crear, ver, buscar y eliminar listas de reproducción
-- **Interfaz Moderna**: Diseño responsive con Angular Material
-- **Búsqueda en Tiempo Real**: Buscar listas por nombre
-- **Modales Interactivos**: Ver detalles de listas y crear nuevas
-- **Validación de Formularios**: Validación completa en todos los formularios
+- Autenticación JWT segura (login y protección de rutas)
+- Visualización de todas las listas de reproducción en cards
+- Búsqueda en tiempo real por nombre de lista
+- Modal para ver detalles de canciones de una lista
+- Formulario dinámico para crear nuevas listas y añadir canciones
+- Eliminación de listas con confirmación
+- Interfaz responsive y moderna con Angular Material
+- Validación completa de formularios
+- Manejo de errores y mensajes claros al usuario
 
-## 🛠️ Tecnologías
+## Tecnologías utilizadas
 
-- **Angular 20**: Framework principal
-- **Angular Material**: Componentes UI
-- **TypeScript**: Tipado fuerte
-- **RxJS**: Programación reactiva
-- **SCSS**: Estilos avanzados
-- **JWT**: Autenticación
+- Angular 20
+- Angular Material
+- TypeScript
+- RxJS
+- SCSS
+- JWT (autenticación)
 
-## 📋 Requisitos Previos
+## Requisitos previos
 
 - Node.js (versión 18 o superior)
 - npm o yarn
-- Backend Quipux Music API ejecutándose en `http://localhost:8080`
+- Backend Quipux Music API ejecutándose en `http://localhost:8080` (o la URL que configures)
 
-## 🔧 Instalación
+## Instalación y ejecución
 
-1. **Clonar el repositorio**
-```bash
-git clone <repository-url>
-cd quipux-frontend
-```
+1. Clona el repositorio:
+   ```bash
+   git clone <repository-url>
+   cd quipux-frontend
+   ```
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+3. Configura la URL del backend en `src/environments/environment.ts` si es necesario.
+4. Ejecuta la aplicación:
+   ```bash
+   ng serve
+   ```
+5. Abre tu navegador en `http://localhost:4200`
 
-2. **Instalar dependencias**
-```bash
-npm install
-```
-
-3. **Configurar el backend**
-Asegúrate de que el backend esté ejecutándose en `http://localhost:8080` o modifica la URL en `src/environments/environment.ts`
-
-4. **Ejecutar la aplicación**
-```bash
-ng serve
-```
-
-5. **Abrir en el navegador**
-Navega a `http://localhost:4200`
-
-## 🎯 Funcionalidades
-
-### Autenticación
-- **Login**: `/login` - Formulario de autenticación
-- **Guard de Rutas**: Protección automática de rutas
-- **Persistencia de Token**: Almacenamiento en localStorage
-
-### Gestión de Listas
-- **Ver Todas**: Muestra todas las listas de reproducción
-- **Buscar**: Búsqueda en tiempo real por nombre
-- **Ver Detalles**: Modal con información completa de canciones
-- **Crear Nueva**: Formulario dinámico para agregar canciones
-- **Eliminar**: Confirmación antes de eliminar
-
-### Interfaz de Usuario
-- **Responsive**: Adaptable a diferentes tamaños de pantalla
-- **Material Design**: Componentes modernos y accesibles
-- **Estados de Carga**: Indicadores visuales durante operaciones
-- **Mensajes de Error**: Notificaciones claras para el usuario
-
-## 📁 Estructura del Proyecto
+## Estructura del proyecto
 
 ```
 src/
@@ -78,41 +55,45 @@ src/
 ├── components/            # Componentes de la aplicación
 │   ├── home/             # Página principal con listas
 │   └── login/            # Formulario de autenticación
+├── dialogs/              # Modales para detalles y creación de listas
 ├── interfaces/           # Interfaces TypeScript
 │   ├── auth.interface.ts
 │   └── playlist.interface.ts
-├── service/              # Servicios de datos
-│   ├── auth.service.ts   # Autenticación
-│   └── listService.ts    # Gestión de listas
-├── router/               # Configuración de rutas
+├── service/              # Servicios de datos y autenticación
+│   ├── auth.service.ts
+│   └── listService.ts
+├── router/               # Configuración de rutas y guards
 │   └── guards/           # Guards de autenticación
 ├── interceptor/          # Interceptores HTTP
-└── environments/         # Configuración de entorno
+├── environments/         # Configuración de entorno
+└── utils/                # Utilidades (por ejemplo, manejo seguro de localStorage)
 ```
 
-## 🔐 Autenticación
+## Uso de la aplicación
 
-### Credenciales de Prueba
-El backend incluye usuarios de prueba que puedes usar:
+1. Accede a `/login` e inicia sesión con un usuario válido del backend.
+2. Una vez autenticado, navega a `/home` para ver todas las listas de reproducción.
+3. Utiliza la barra de búsqueda para filtrar listas por nombre en tiempo real.
+4. Haz clic en "Ver Detalles" para ver las canciones de una lista en un modal.
+5. Haz clic en "Nueva Lista" para crear una lista y añadir canciones dinámicamente.
+6. Elimina listas con el botón correspondiente (requiere confirmación).
 
-```json
+## Autenticación
+
+- El login se realiza en `/login` y almacena el token JWT en localStorage.
+- Todas las rutas protegidas requieren autenticación y el token se envía automáticamente en el header Authorization.
+- Si el token expira o es inválido, el usuario es redirigido al login.
+
+### Ejemplo de usuario de prueba
+
+```
 {
   "nombreUsuario": "usuario",
   "contrasena": "password123"
 }
 ```
 
-### Flujo de Autenticación
-1. Usuario accede a `/login`
-2. Ingresa credenciales
-3. Sistema valida con backend
-4. Token JWT se almacena automáticamente
-5. Usuario es redirigido a `/home`
-6. Todas las peticiones incluyen el token automáticamente
-
-## 🎵 API Endpoints
-
-La aplicación consume los siguientes endpoints:
+## Endpoints consumidos
 
 - `POST /auth/login` - Iniciar sesión
 - `POST /auth/register` - Registrar usuario
@@ -121,62 +102,22 @@ La aplicación consume los siguientes endpoints:
 - `POST /lists` - Crear nueva lista
 - `DELETE /lists/{nombre}` - Eliminar lista
 
-## 🚀 Comandos Útiles
+## Comandos útiles
 
 ```bash
-# Servidor de desarrollo
-ng serve
-
-# Construir para producción
-ng build
-
-# Ejecutar tests
-ng test
-
-# Linting
-ng lint
+ng serve         # Servidor de desarrollo
+ng build         # Construir para producción
+ng test          # Ejecutar tests unitarios
+ng lint          # Linting del código
 ```
 
-## 🔧 Configuración
+## Configuración
 
-### Variables de Entorno
-Modifica `src/environments/environment.ts` para cambiar la URL del backend:
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:8080' // Cambiar según tu configuración
-};
-```
-
-### Estilos
-Los estilos están en SCSS y siguen la metodología BEM. Los archivos principales:
-- `src/styles.scss` - Estilos globales
-- `src/components/*/*.scss` - Estilos específicos de componentes
-
-## 🐛 Solución de Problemas
-
-### Error de CORS
-Si encuentras errores de CORS, asegúrate de que el backend esté configurado correctamente.
-
-### Token Expirado
-Si el token expira, el usuario será redirigido automáticamente al login.
-
-### Problemas de Conexión
-Verifica que el backend esté ejecutándose en la URL correcta.
-
-## 📝 Contribución
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 🤝 Soporte
-
-Para soporte técnico o preguntas, contacta al equipo de desarrollo.
+- Modifica `src/environments/environment.ts` para cambiar la URL del backend:
+  ```typescript
+  export const environment = {
+    production: false,
+    apiUrl: 'http://localhost:8080' // Cambia según tu configuración
+  };
+  ```
+- Los estilos globales están en `src/styles.scss` y los específicos en cada componente.
