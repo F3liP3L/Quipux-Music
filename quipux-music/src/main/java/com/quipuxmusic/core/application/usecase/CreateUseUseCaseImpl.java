@@ -6,30 +6,24 @@ import com.quipuxmusic.core.domain.port.PasswordEncoderPort;
 import com.quipuxmusic.core.domain.port.UserRepositoryPort;
 import com.quipuxmusic.core.domain.usecase.CreateUserUseCase;
 import com.quipuxmusic.core.domain.validator.UserValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
-public class CreateUserUseCaseImpl implements CreateUserUseCase {
-    
+public class CreateUseUseCaseImpl implements CreateUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoderPort passwordEncoderPort;
     private final UserValidator userValidator;
-    
-    @Autowired
-    public CreateUserUseCaseImpl(UserRepositoryPort userRepositoryPort,
-                               PasswordEncoderPort passwordEncoderPort,
-                               UserValidator userValidator) {
+
+    public CreateUseUseCaseImpl(UserRepositoryPort userRepositoryPort, PasswordEncoderPort passwordEncoderPort, UserValidator userValidator) {
         this.userRepositoryPort = userRepositoryPort;
         this.passwordEncoderPort = passwordEncoderPort;
         this.userValidator = userValidator;
     }
-    
+
     @Override
     public MessageResponseDTO execute(User user) {
-        // Validar datos del usuario
         if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre de usuario es requerido");
         }
@@ -37,18 +31,15 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
             throw new IllegalArgumentException("La contraseña es requerida");
         }
 
-        // Validar que no exista duplicado
         if (userRepositoryPort.existsByUsername(user.getUsername())) {
             throw new IllegalArgumentException("El nombre de usuario ya existe");
         }
-        
-        // Encriptar contraseña
+
         String encodedPassword = passwordEncoderPort.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        
-        // Guardar usuario
+
         userRepositoryPort.save(user);
-        
+
         return new MessageResponseDTO("Usuario registrado exitosamente", "EXITO");
     }
-} 
+}
