@@ -4,6 +4,7 @@ import com.quipuxmusic.core.application.dto.LoginRequestDTO;
 import com.quipuxmusic.core.application.dto.LoginResponseDTO;
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
 import com.quipuxmusic.core.application.dto.RegistroRequestDTO;
+import com.quipuxmusic.core.application.facade.AuthFacadePort;
 import com.quipuxmusic.core.application.facade.AuthenticateUserFacade;
 import com.quipuxmusic.core.application.facade.CreateUserFacade;
 import jakarta.validation.Valid;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthenticateUserFacade authenticateUserFacade;
+    private final AuthFacadePort authenticateUserFacade;
     private final CreateUserFacade createUserFacade;
 
     @Autowired
@@ -51,7 +52,6 @@ public class AuthController {
     @PostMapping("/create-test-users")
     public ResponseEntity<?> createTestUsers() {
         try {
-            // Crear usuarios de prueba
             createUserFacade.createUser(new RegistroRequestDTO("admin", "admin123", "ADMIN"));
             createUserFacade.createUser(new RegistroRequestDTO("usuario", "password123", "USER"));
             createUserFacade.createUser(new RegistroRequestDTO("test", "test123", "USER"));

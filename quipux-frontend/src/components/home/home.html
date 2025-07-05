@@ -1,13 +1,75 @@
 <div class="container">
-    <div class="top-bar">
-        <h1>Bienvenido a Quipux Music</h1>
+  <!-- Toolbar -->
+  <mat-toolbar color="primary" class="toolbar">
+    <span>Quipux Music</span>
+    <span class="spacer"></span>
+    <div class="user-info" *ngIf="currentUser">
+      <span>Hola, {{ currentUser.nombreUsuario }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar Sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
 
+  <!-- Search and Actions Bar -->
+  <div class="actions-bar">
+    <div class="search-container">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar lista de reproducción</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Escribe el nombre de la lista...">
+        <mat-icon matSuffix>search</mat-icon>
+        <button mat-icon-button matSuffix *ngIf="searchControl.value" (click)="clearSearch()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
     </div>
-    <div class="list">
-            <mat-card *ngFor="let item of lists; index as i; first as isFirst" (click)="onClick(item.title)"
-                      [ngClass]="{'first-item': isFirst}">
-                <mat-card-title>{{ item.title }}</mat-card-title>
-                <mat-card-subtitle>{{ item.description }}</mat-card-subtitle>
-            </mat-card>
-    </div>
+    <button mat-raised-button color="primary" (click)="onCreatePlaylist()">
+      <mat-icon>add</mat-icon>
+      Nueva Lista
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <p>Cargando listas...</p>
+  </div>
+
+  <!-- Playlists Grid -->
+  <div class="playlists-grid" *ngIf="!isLoading">
+    <mat-card *ngFor="let playlist of lists" class="playlist-card">
+      <mat-card-header>
+        <mat-card-title>{{ playlist.nombre }}</mat-card-title>
+        <mat-card-subtitle>{{ playlist.descripcion }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-actions align="end">
+        <button mat-button color="primary" (click)="onViewDetails(playlist)">
+          <mat-icon>visibility</mat-icon>
+          Ver Detalles
+        </button>
+        <button mat-button color="warn" (click)="onDeletePlaylist(playlist)">
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && lists.length === 0">
+    <mat-icon class="empty-icon">music_note</mat-icon>
+    <h3>No hay listas de reproducción</h3>
+    <p>Crea tu primera lista de reproducción para empezar</p>
+    <button mat-raised-button color="primary" (click)="onCreatePlaylist()">
+      <mat-icon>add</mat-icon>
+      Crear Lista
+    </button>
+  </div>
 </div>
