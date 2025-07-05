@@ -1,0 +1,18 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* Estilos globales para el cuerpo */
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0;
+}
+
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+/* Asegurar que las tarjetas de Material se vean correctamente */
+.mat-mdc-card {
+  margin-bottom: 16px;
+}

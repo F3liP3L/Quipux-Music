@@ -1,0 +1,350 @@
+{
+	"info": {
+		"_postman_id": "quipux-movie-api",
+		"name": "Quipux Movie API",
+		"description": "API REST para gestión de listas de reproducción con autenticación JWT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"usuario\",\n    \"password\": \"password123\",\n    \"role\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar Sesión",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('jwt_token', response.token);",
+									"    console.log('Token guardado:', response.token);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"usuario\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Listas de Reproducción",
+			"item": [
+				{
+					"name": "Crear Lista de Reproducción",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Mi Lista Favorita\",\n    \"description\": \"Canciones que me gustan\",\n    \"songs\": [\n        {\n            \"title\": \"Bohemian Rhapsody\",\n            \"artist\": \"Queen\",\n            \"album\": \"A Night at the Opera\",\n            \"year\": \"1975\",\n            \"genre\": \"Rock\"\n        },\n        {\n            \"title\": \"Stairway to Heaven\",\n            \"artist\": \"Led Zeppelin\",\n            \"album\": \"Led Zeppelin IV\",\n            \"year\": \"1971\",\n            \"genre\": \"Rock\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/lists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Todas las Listas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/lists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Lista por Nombre",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/lists/Mi Lista Favorita",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists",
+								"Mi Lista Favorita"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Lista",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/lists/Mi Lista Favorita",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists",
+								"Mi Lista Favorita"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ejemplos de Listas",
+			"item": [
+				{
+					"name": "Crear Lista Rock Clásico",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rock Clásico\",\n    \"description\": \"Los mejores del rock de todos los tiempos\",\n    \"songs\": [\n        {\n            \"title\": \"Stairway to Heaven\",\n            \"artist\": \"Led Zeppelin\",\n            \"album\": \"Led Zeppelin IV\",\n            \"year\": \"1971\",\n            \"genre\": \"Rock\"\n        },\n        {\n            \"title\": \"Hotel California\",\n            \"artist\": \"Eagles\",\n            \"album\": \"Hotel California\",\n            \"year\": \"1976\",\n            \"genre\": \"Rock\"\n        },\n        {\n            \"title\": \"Sweet Child O' Mine\",\n            \"artist\": \"Guns N' Roses\",\n            \"album\": \"Appetite for Destruction\",\n            \"year\": \"1987\",\n            \"genre\": \"Hard Rock\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/lists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Lista Pop Latino",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pop Latino\",\n    \"description\": \"Éxitos del pop latino\",\n    \"songs\": [\n        {\n            \"title\": \"Despacito\",\n            \"artist\": \"Luis Fonsi\",\n            \"album\": \"Despacito & Mis Grandes Éxitos\",\n            \"year\": \"2017\",\n            \"genre\": \"Pop Latino\"\n        },\n        {\n            \"title\": \"La Bicicleta\",\n            \"artist\": \"Carlos Vives\",\n            \"album\": \"Vives\",\n            \"year\": \"2016\",\n            \"genre\": \"Vallenato\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/lists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Casos de Error",
+			"item": [
+				{
+					"name": "Crear Lista sin Nombre (Error)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"\",\n    \"description\": \"Lista sin nombre\",\n    \"songs\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/lists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Lista Inexistente (Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/lists/ListaInexistente",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lists",
+								"ListaInexistente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login con Credenciales Incorrectas (Error)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"usuario\",\n    \"password\": \"contraseña_incorrecta\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

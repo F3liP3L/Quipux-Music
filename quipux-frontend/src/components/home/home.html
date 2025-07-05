@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="top-bar">
+        <h1>Bienvenido a Quipux Music</h1>
+
+    </div>
+    <div class="list">
+            <mat-card *ngFor="let item of lists; index as i; first as isFirst" (click)="onClick(item.title)"
+                      [ngClass]="{'first-item': isFirst}">
+                <mat-card-title>{{ item.title }}</mat-card-title>
+                <mat-card-subtitle>{{ item.description }}</mat-card-subtitle>
+            </mat-card>
+    </div>
+</div>
