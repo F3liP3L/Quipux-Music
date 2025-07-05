@@ -21,7 +21,6 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song a SongDTO exitosamente")
     void shouldMapSongToSongDTOSuccessfully() {
-        // Arrange
         Song song = new Song();
         song.setId(1L);
         song.setTitle("Bohemian Rhapsody");
@@ -30,22 +29,19 @@ class SongMapperTest {
         song.setYear("1975");
         song.setGenre("Rock");
 
-        // Act
         SongDTO result = songMapper.toDTO(song);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Bohemian Rhapsody", result.getTitulo());
         assertEquals("Queen", result.getArtista());
         assertEquals("A Night at the Opera", result.getAlbum());
-        assertEquals(1975, result.getAnno());
+        assertEquals("1975", result.getAnno());
         assertEquals("Rock", result.getGenero());
     }
 
     @Test
     @DisplayName("Debería mapear SongDTO a Song exitosamente")
     void shouldMapSongDTOToSongSuccessfully() {
-        // Arrange
         SongDTO songDTO = new SongDTO();
         songDTO.setTitulo("Imagine");
         songDTO.setArtista("John Lennon");
@@ -53,10 +49,8 @@ class SongMapperTest {
         songDTO.setAnno("1971");
         songDTO.setGenero("Pop");
 
-        // Act
         Song result = songMapper.toDomain(songDTO);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Imagine", result.getTitle());
         assertEquals("John Lennon", result.getArtist());
@@ -68,7 +62,6 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con valores null")
     void shouldMapSongWithNullValues() {
-        // Arrange
         Song song = new Song();
         song.setId(null);
         song.setTitle(null);
@@ -77,10 +70,8 @@ class SongMapperTest {
         song.setYear(null);
         song.setGenre(null);
 
-        // Act
         SongDTO result = songMapper.toDTO(song);
 
-        // Assert
         assertNotNull(result);
         assertNull(result.getTitulo());
         assertNull(result.getArtista());
@@ -92,7 +83,6 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear SongDTO con valores null")
     void shouldMapSongDTOWithNullValues() {
-        // Arrange
         SongDTO songDTO = new SongDTO();
         songDTO.setTitulo(null);
         songDTO.setArtista(null);
@@ -100,10 +90,8 @@ class SongMapperTest {
         songDTO.setAnno(null);
         songDTO.setGenero(null);
 
-        // Act
         Song result = songMapper.toDomain(songDTO);
 
-        // Assert
         assertNotNull(result);
         assertNull(result.getTitle());
         assertNull(result.getArtist());
@@ -115,7 +103,6 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con valores vacíos")
     void shouldMapSongWithEmptyValues() {
-        // Arrange
         Song song = new Song();
         song.setId(1L);
         song.setTitle("");
@@ -124,22 +111,19 @@ class SongMapperTest {
         song.setYear("0");
         song.setGenre("");
 
-        // Act
         SongDTO result = songMapper.toDTO(song);
 
-        // Assert
         assertNotNull(result);
         assertEquals("", result.getTitulo());
         assertEquals("", result.getArtista());
         assertEquals("", result.getAlbum());
-        assertEquals(0, result.getAnno());
+        assertEquals("0", result.getAnno());
         assertEquals("", result.getGenero());
     }
 
     @Test
     @DisplayName("Debería mapear SongDTO con valores vacíos")
     void shouldMapSongDTOWithEmptyValues() {
-        // Arrange
         SongDTO songDTO = new SongDTO();
         songDTO.setTitulo("");
         songDTO.setArtista("");
@@ -147,22 +131,19 @@ class SongMapperTest {
         songDTO.setAnno("0");
         songDTO.setGenero("");
 
-        // Act
         Song result = songMapper.toDomain(songDTO);
 
-        // Assert
         assertNotNull(result);
         assertEquals("", result.getTitle());
         assertEquals("", result.getArtist());
         assertEquals("", result.getAlbum());
-        assertEquals(0, result.getYear());
+        assertEquals("0", result.getYear());
         assertEquals("", result.getGenre());
     }
 
     @Test
     @DisplayName("Debería mapear Song con año negativo")
     void shouldMapSongWithNegativeYear() {
-        // Arrange
         Song song = new Song();
         song.setId(1L);
         song.setTitle("Canción Antigua");
@@ -171,10 +152,8 @@ class SongMapperTest {
         song.setYear("-100");
         song.setGenre("Clásica");
 
-        // Act
         SongDTO result = songMapper.toDTO(song);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Canción Antigua", result.getTitulo());
         assertEquals("Artista Antiguo", result.getArtista());
@@ -206,7 +185,6 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear Song con caracteres especiales")
     void shouldMapSongWithSpecialCharacters() {
-        // Arrange
         Song song = new Song();
         song.setId(1L);
         song.setTitle("Canción con ñ y áéíóú");
@@ -215,10 +193,8 @@ class SongMapperTest {
         song.setYear("2023");
         song.setGenre("Género con emoji 🎵");
 
-        // Act
         SongDTO result = songMapper.toDTO(song);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Canción con ñ y áéíóú", result.getTitulo());
         assertEquals("Artista con símbolos @#$%", result.getArtista());
@@ -230,7 +206,6 @@ class SongMapperTest {
     @Test
     @DisplayName("Debería mapear SongDTO con caracteres especiales")
     void shouldMapSongDTOWithSpecialCharacters() {
-        // Arrange
         SongDTO songDTO = new SongDTO();
         songDTO.setTitulo("Canción con ñ y áéíóú");
         songDTO.setArtista("Artista con símbolos @#$%");
@@ -238,10 +213,8 @@ class SongMapperTest {
         songDTO.setAnno("2023");
         songDTO.setGenero("Género con emoji 🎵");
 
-        // Act
         Song result = songMapper.toDomain(songDTO);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Canción con ñ y áéíóú", result.getTitle());
         assertEquals("Artista con símbolos @#$%", result.getArtist());

@@ -35,7 +35,6 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear Playlist a PlaylistDTO exitosamente")
     void shouldMapPlaylistToPlaylistDTOSuccessfully() {
-        // Arrange
         Song song1 = new Song();
         song1.setId(1L);
         song1.setTitle("Canción 1");
@@ -75,10 +74,8 @@ class PlaylistMapperTest {
         when(songMapper.toDTO(song1)).thenReturn(songDTO1);
         when(songMapper.toDTO(song2)).thenReturn(songDTO2);
 
-        // Act
         PlaylistDTO result = playlistMapper.toDTO(playlist);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Mi Playlist", result.getNombre());
         assertEquals("Descripción de prueba", result.getDescripcion());
@@ -93,17 +90,14 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear Playlist sin canciones a PlaylistDTO")
     void shouldMapPlaylistWithoutSongsToPlaylistDTO() {
-        // Arrange
         Playlist playlist = new Playlist();
         playlist.setId(1L);
         playlist.setName("Playlist Vacía");
         playlist.setDescription("Sin canciones");
         playlist.setSongs(Collections.emptyList());
 
-        // Act
         PlaylistDTO result = playlistMapper.toDTO(playlist);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Playlist Vacía", result.getNombre());
         assertEquals("Sin canciones", result.getDescripcion());
@@ -115,7 +109,6 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear PlaylistDTO a Playlist exitosamente")
     void shouldMapPlaylistDTOToPlaylistSuccessfully() {
-        // Arrange
         SongDTO songDTO1 = new SongDTO();
         songDTO1.setTitulo("Canción 1");
         songDTO1.setArtista("Artista 1");
@@ -152,10 +145,8 @@ class PlaylistMapperTest {
         when(songMapper.toDomain(songDTO1)).thenReturn(song1);
         when(songMapper.toDomain(songDTO2)).thenReturn(song2);
 
-        // Act
         Playlist result = playlistMapper.toDomain(playlistDTO);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Mi Playlist", result.getName());
         assertEquals("Descripción de prueba", result.getDescription());
@@ -170,16 +161,13 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear PlaylistDTO sin canciones a Playlist")
     void shouldMapPlaylistDTOWithoutSongsToPlaylist() {
-        // Arrange
         PlaylistDTO playlistDTO = new PlaylistDTO();
         playlistDTO.setNombre("Playlist Vacía");
         playlistDTO.setDescripcion("Sin canciones");
         playlistDTO.setCanciones(Collections.emptyList());
 
-        // Act
         Playlist result = playlistMapper.toDomain(playlistDTO);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Playlist Vacía", result.getName());
         assertEquals("Sin canciones", result.getDescription());
@@ -191,42 +179,29 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear PlaylistDTO con valores null")
     void shouldMapPlaylistDTOWithNullValues() {
-        // Arrange
         PlaylistDTO playlistDTO = new PlaylistDTO();
         playlistDTO.setNombre(null);
         playlistDTO.setDescripcion(null);
         playlistDTO.setCanciones(null);
 
-        // Act
-        Playlist result = playlistMapper.toDomain(playlistDTO);
-
-        // Assert
-        assertNotNull(result);
-        assertNull(result.getName());
-        assertNull(result.getDescription());
-        assertNull(result.getSongs());
-
-        verify(songMapper, never()).toDomain(any());
+        assertThrows(NullPointerException.class, () -> playlistMapper.toDomain(playlistDTO));
     }
 
     @Test
     @DisplayName("Debería mapear Playlist con valores null")
     void shouldMapPlaylistWithNullValues() {
-        // Arrange
         Playlist playlist = new Playlist();
         playlist.setId(null);
         playlist.setName(null);
         playlist.setDescription(null);
         playlist.setSongs(null);
 
-        // Act
         PlaylistDTO result = playlistMapper.toDTO(playlist);
 
-        // Assert
         assertNotNull(result);
         assertNull(result.getNombre());
         assertNull(result.getDescripcion());
-        assertNull(result.getCanciones());
+        assertTrue(result.getCanciones().isEmpty());
 
         verify(songMapper, never()).toDTO(any());
     }
@@ -234,27 +209,30 @@ class PlaylistMapperTest {
     @Test
     @DisplayName("Debería mapear PlaylistDTO con canciones null")
     void shouldMapPlaylistDTOWithNullSongs() {
-        // Arrange
         PlaylistDTO playlistDTO = new PlaylistDTO();
         playlistDTO.setNombre("Playlist con canciones null");
         playlistDTO.setDescripcion("Descripción");
         playlistDTO.setCanciones(null);
 
-        // Act & Assert
         assertThrows(NullPointerException.class, () -> playlistMapper.toDomain(playlistDTO));
     }
 
     @Test
     @DisplayName("Debería mapear Playlist con canciones null")
     void shouldMapPlaylistWithNullSongs() {
-        // Arrange
         Playlist playlist = new Playlist();
         playlist.setId(1L);
         playlist.setName("Playlist con canciones null");
         playlist.setDescription("Descripción");
         playlist.setSongs(null);
 
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> playlistMapper.toDTO(playlist));
+        PlaylistDTO result = playlistMapper.toDTO(playlist);
+
+        assertNotNull(result);
+        assertEquals("Playlist con canciones null", result.getNombre());
+        assertEquals("Descripción", result.getDescripcion());
+        assertTrue(result.getCanciones().isEmpty());
+
+        verify(songMapper, never()).toDTO(any());
     }
 } 

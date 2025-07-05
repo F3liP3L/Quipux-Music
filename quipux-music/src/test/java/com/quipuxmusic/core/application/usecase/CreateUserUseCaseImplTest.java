@@ -39,18 +39,14 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería crear usuario exitosamente")
     void shouldCreateUserSuccessfully() {
-        // Arrange
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("password123");
 
         when(userRepositoryPort.existsByUsername("testuser")).thenReturn(false);
         when(passwordEncoderPort.encode("password123")).thenReturn("encodedPassword123");
-
-        // Act
         MessageResponseDTO result = createUserUseCase.execute(user);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Usuario registrado exitosamente", result.getMensaje());
         assertEquals("EXITO", result.getTipo());
@@ -64,12 +60,10 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username es null")
     void shouldThrowExceptionWhenUsernameIsNull() {
-        // Arrange
         User user = new User();
         user.setUsername(null);
         user.setPassword("password123");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -84,12 +78,10 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username está vacío")
     void shouldThrowExceptionWhenUsernameIsEmpty() {
-        // Arrange
         User user = new User();
         user.setUsername("");
         user.setPassword("password123");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -104,12 +96,10 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username tiene solo espacios")
     void shouldThrowExceptionWhenUsernameHasOnlySpaces() {
-        // Arrange
         User user = new User();
         user.setUsername("   ");
         user.setPassword("password123");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -124,12 +114,10 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password es null")
     void shouldThrowExceptionWhenPasswordIsNull() {
-        // Arrange
         User user = new User();
         user.setUsername("testuser");
         user.setPassword(null);
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -144,12 +132,11 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password está vacío")
     void shouldThrowExceptionWhenPasswordIsEmpty() {
-        // Arrange
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("");
 
-        // Act & Assert
+
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -164,12 +151,10 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password tiene solo espacios")
     void shouldThrowExceptionWhenPasswordHasOnlySpaces() {
-        // Arrange
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("   ");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -184,14 +169,12 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username ya existe")
     void shouldThrowExceptionWhenUsernameAlreadyExists() {
-        // Arrange
         User user = new User();
         user.setUsername("existinguser");
         user.setPassword("password123");
 
         when(userRepositoryPort.existsByUsername("existinguser")).thenReturn(true);
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> createUserUseCase.execute(user)
@@ -206,18 +189,14 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería encriptar password antes de guardar")
     void shouldEncodePasswordBeforeSaving() {
-        // Arrange
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("plainPassword");
 
         when(userRepositoryPort.existsByUsername("testuser")).thenReturn(false);
         when(passwordEncoderPort.encode("plainPassword")).thenReturn("encodedPassword");
-
-        // Act
         createUserUseCase.execute(user);
 
-        // Assert
         assertEquals("encodedPassword", user.getPassword());
         verify(passwordEncoderPort).encode("plainPassword");
         verify(userRepositoryPort).save(user);
@@ -226,7 +205,6 @@ class CreateUserUseCaseImplTest {
     @Test
     @DisplayName("Debería mantener username original después de encriptar password")
     void shouldKeepOriginalUsernameAfterEncodingPassword() {
-        // Arrange
         User user = new User();
         user.setUsername("testuser");
         user.setPassword("password123");
@@ -234,10 +212,8 @@ class CreateUserUseCaseImplTest {
         when(userRepositoryPort.existsByUsername("testuser")).thenReturn(false);
         when(passwordEncoderPort.encode("password123")).thenReturn("encodedPassword123");
 
-        // Act
         createUserUseCase.execute(user);
 
-        // Assert
         assertEquals("testuser", user.getUsername());
         assertEquals("encodedPassword123", user.getPassword());
     }

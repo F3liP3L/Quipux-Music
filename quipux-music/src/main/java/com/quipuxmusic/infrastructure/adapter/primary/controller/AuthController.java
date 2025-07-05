@@ -5,8 +5,6 @@ import com.quipuxmusic.core.application.dto.LoginResponseDTO;
 import com.quipuxmusic.core.application.dto.MessageResponseDTO;
 import com.quipuxmusic.core.application.dto.RegisterRequestDTO;
 import com.quipuxmusic.core.application.facade.AuthFacadePort;
-import com.quipuxmusic.core.application.facade.AuthenticateUserFacade;
-import com.quipuxmusic.core.application.facade.CreateUserFacade;
 import com.quipuxmusic.core.application.facade.CreateUserFacadePort;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +20,8 @@ public class AuthController {
     private final CreateUserFacadePort createUserFacade;
 
     @Autowired
-    public AuthController(AuthenticateUserFacade authenticateUserFacade,
-                         CreateUserFacade createUserFacade) {
+    public AuthController(AuthFacadePort authenticateUserFacade,
+                          CreateUserFacadePort createUserFacade) {
         this.authenticateUserFacade = authenticateUserFacade;
         this.createUserFacade = createUserFacade;
     }

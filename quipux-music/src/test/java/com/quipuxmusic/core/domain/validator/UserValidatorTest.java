@@ -73,7 +73,6 @@ class UserValidatorTest {
         request.setNombreUsuario("testuser");
         request.setContrasena(null);
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> userValidator.validateLoginRequest(request)
@@ -84,12 +83,10 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password está vacío en login")
     void shouldThrowExceptionWhenPasswordIsEmptyInLogin() {
-        // Arrange
         LoginRequestDTO request = new LoginRequestDTO();
         request.setNombreUsuario("testuser");
         request.setContrasena("   ");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> userValidator.validateLoginRequest(request)
@@ -100,14 +97,12 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería validar registro request exitosamente")
     void shouldValidateRegisterRequestSuccessfully() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setNombreUsuario("newuser");
         request.setContrasena("password123");
 
         when(userRepositoryPort.existsByUsername("newuser")).thenReturn(false);
 
-        // Act & Assert
         assertDoesNotThrow(() -> userValidator.validateRegistroRequest(request));
         verify(userRepositoryPort).existsByUsername("newuser");
     }
@@ -115,12 +110,10 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username es null en registro")
     void shouldThrowExceptionWhenUsernameIsNullInRegister() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setNombreUsuario(null);
         request.setContrasena("password123");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> userValidator.validateRegistroRequest(request)
@@ -131,12 +124,10 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando username está vacío en registro")
     void shouldThrowExceptionWhenUsernameIsEmptyInRegister() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setNombreUsuario("");
         request.setContrasena("password123");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> userValidator.validateRegistroRequest(request)
@@ -147,12 +138,10 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password es null en registro")
     void shouldThrowExceptionWhenPasswordIsNullInRegister() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setNombreUsuario("testuser");
         request.setContrasena(null);
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> userValidator.validateRegistroRequest(request)
@@ -163,12 +152,10 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar excepción cuando password está vacío en registro")
     void shouldThrowExceptionWhenPasswordIsEmptyInRegister() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setNombreUsuario("testuser");
         request.setContrasena("   ");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> userValidator.validateRegistroRequest(request)
@@ -179,14 +166,11 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar DuplicateUserException cuando username ya existe")
     void shouldThrowDuplicateUserExceptionWhenUsernameExists() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setNombreUsuario("existinguser");
         request.setContrasena("password123");
-
         when(userRepositoryPort.existsByUsername("existinguser")).thenReturn(true);
 
-        // Act & Assert
         DuplicateUserException exception = assertThrows(
             DuplicateUserException.class,
             () -> userValidator.validateRegistroRequest(request)
@@ -198,11 +182,9 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería validar que username no es duplicado exitosamente")
     void shouldValidateNotDuplicateSuccessfully() {
-        // Arrange
         String username = "uniqueuser";
         when(userRepositoryPort.existsByUsername(username)).thenReturn(false);
 
-        // Act & Assert
         assertDoesNotThrow(() -> userValidator.validateNotDuplicate(username));
         verify(userRepositoryPort).existsByUsername(username);
     }
@@ -210,11 +192,9 @@ class UserValidatorTest {
     @Test
     @DisplayName("Debería lanzar DuplicateUserException cuando username es duplicado")
     void shouldThrowDuplicateUserExceptionWhenUsernameIsDuplicate() {
-        // Arrange
         String username = "duplicateuser";
         when(userRepositoryPort.existsByUsername(username)).thenReturn(true);
 
-        // Act & Assert
         DuplicateUserException exception = assertThrows(
             DuplicateUserException.class,
             () -> userValidator.validateNotDuplicate(username)
